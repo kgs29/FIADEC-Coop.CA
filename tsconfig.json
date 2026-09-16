@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "cypress/component/.sidebar",
+    "cypress/component/.DataSection..tsx",
+    "cypress/component/._____AuditTimeline",
+    "src/components/tables/main/src/store/apis/main/indicator_value.api copy",
+  ],
+  "exclude": [
+    "node_modules",
+    "cypress",
+    "prend les données ici",
+    "**/*.cy.ts",
+    "**/*.test.tsx",
+    "**/*.test.ts",
+    "**/*.cy.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
+}

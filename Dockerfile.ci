@@ -1,0 +1,26 @@
+ARG BASE_IMAGE_REACT_NODE=10.10.10.247:5050/fiadec-devs/templates/fiadec-base-images/react-node:fiadec-react-v1.0.0
+FROM ${BASE_IMAGE_REACT_NODE}
+
+WORKDIR /app
+
+COPY . .
+
+# Déactiver la télémétrie Next.js pour le mode offline
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Générer le build de production dans l'image
+RUN npm run build
+
+# Accorder les permissions au dossier avant de changer d'utilisateur
+RUN chown -R node:node /app
+
+EXPOSE 3000
+
+# Correction Trivy DS026: Ajout d'un Healthcheck
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000 || exit 1
+
+
+USER node
+
+CMD ["npm", "run", "dev"]

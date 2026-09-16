@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: fiadec_portal_app
+    ports:
+      - 10014:3000
+    environment:
+      - NODE_ENV=production
+    command: sh -c "npm run build && pm2-runtime npm --name fiadec-portal -- start"

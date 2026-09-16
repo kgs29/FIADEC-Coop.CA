@@ -1,0 +1,14 @@
+{
+  "report-dir": "coverage",
+  "reporter": ["html", "text", "json"],
+  "exclude": [
+    "**/*.spec.js",
+    "**/*.spec.ts",
+    "**/*.cy.js",
+    "**/*.cy.ts",
+    "cypress/**/*.*",
+    ".next/**/*",
+    "node_modules/**/*"
+  ],
+  "all": true
+}

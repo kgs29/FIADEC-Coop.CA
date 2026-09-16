@@ -1,0 +1,659 @@
+image: docker/compose:1.29.2
+services:
+  - docker:20.10.7-dind
+
+stages:
+  - build
+  - test
+  - code_quality
+  - security
+  - deploy
+  - version
+  - registry
+
+variables:
+  GIT_DEPTH: 0
+  CONTAINER_NAME: fiadec-portal_${CI_JOB_ID}
+  DOCKER_IMAGE: $REGISTRY_URL/fiadec-devs/web-apps/fiadec/portal:ci
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: always
+    - when: never
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .docker-cache/
+  policy: pull-push
+
+# =======================================
+# JOB 1: BUILD BASE IMAGE - Publication manuelle de l'image de base
+# =======================================
+
+build_base_image:
+  stage: build
+  tags:
+    - shell-3
+  cache: []
+  dependencies: []
+  variables:
+    RN_JOB_PATH: "$RN_DEPLOY_PATHA003/portal/job_$CI_JOB_ID"
+  before_script:
+    - echo ">>> Configuration npm pour utiliser GitLab Package Registry"
+    - |
+      cat > /tmp/.npmrc << EOF
+      @fiadec:registry=http://git.afreetech.local/api/v4/projects/${CI_PROJECT_ID}/packages/npm/
+      //git.afreetech.local/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=$CI_JOB_TOKEN
+      registry=https://registry.npmjs.org/
+      EOF
+    - cat /tmp/.npmrc
+  script:
+    - mkdir -p $RN_JOB_PATH
+    - rsync -av --delete --exclude 'node_modules' --exclude '.git' --exclude '.env*' ./ $RN_JOB_PATH
+
+    - cp /tmp/.npmrc $RN_JOB_PATH/.npmrc
+    - cd $RN_JOB_PATH
+
+    - echo ">>> building  image for test"
+    - docker build -f Dockerfile -t $BASE_IMAGE_REACT_NODE .
+
+    - echo ">>> Login to fiadec-container registry"
+    - echo "$REGISTRY_TOKEN" | docker login ${REGISTRY_URL} -u ${REGISTRY_USER} --password-stdin
+
+    - echo ">>> Publication de l'image de base dans le registry partagé fiadec-base-images"
+    - docker push $BASE_IMAGE_REACT_NODE
+
+    - echo ">>> Image de publiée avec succès"
+  after_script:
+    - rm -rf $RN_JOB_PATH || true
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+      when: manual
+# ========================================
+# JOB 2: UNIT TEST - Tests unitaires avec Vitest
+# Conteneur éphémère : 
+# ========================================
+unit_test:
+  stage: test
+  tags:
+    - shell-3
+  cache: []
+  variables:
+    RN_JOB_PATH: "$RN_DEPLOY_PATHA003/portal/job_$CI_JOB_ID"
+  before_script:
+    - echo ">>> Synchronisation du code source vers le serveur"
+    - mkdir -p $RN_JOB_PATH
+    - rsync -av --delete --exclude 'node_modules' --exclude '.git' --exclude '.env*' --exclude '.next' ./ $RN_JOB_PATH
+    - cd $RN_JOB_PATH
+    - rm -rf coverage
+  script:
+    - echo ">>> Lancement des tests unitaires Vitest"
+
+    - echo ">>> Création du conteneur éphémère "
+    - docker create --name ${CONTAINER_NAME}_unit_test $BASE_IMAGE_REACT_NODE sleep infinity
+
+    - echo ">>> Démarrage du conteneur"
+    - docker start ${CONTAINER_NAME}_unit_test
+
+    - echo ">>> Suppression du code existant dans le conteneur (évite le double src/src/)"
+    - docker exec ${CONTAINER_NAME}_unit_test sh -c "rm -rf /app/src"
+
+    - echo ">>> Injection du code dans le conteneur"
+    - docker cp $RN_JOB_PATH/src ${CONTAINER_NAME}_unit_test:/app/src
+    - docker cp $RN_JOB_PATH/package.json ${CONTAINER_NAME}_unit_test:/app/package.json
+    - docker cp $RN_JOB_PATH/tsconfig.json ${CONTAINER_NAME}_unit_test:/app/tsconfig.json
+    - docker cp $RN_JOB_PATH/vitest.config.ts ${CONTAINER_NAME}_unit_test:/app/vitest.config.ts
+
+    - echo ">>> Exécution des tests unitaires"
+    - |
+      docker exec \
+        -e CI=true \
+        -e NODE_OPTIONS="--max-old-space-size=8192 --expose-gc" \
+        ${CONTAINER_NAME}_unit_test \
+        sh -c "npm run test:unit -- -u --coverage"
+
+    - echo ">>> Tests unitaires terminés"
+
+    - docker cp ${CONTAINER_NAME}_unit_test:/app/coverage $RN_JOB_PATH/coverage || echo "Pas de coverage généré"
+
+    - ls -la $RN_JOB_PATH/coverage/ || echo "Pas de coverage généré"
+
+    - echo ">>> Copie du coverage vers workspace GitLab"
+    - mkdir -p $CI_PROJECT_DIR/coverage
+    - cp -r $RN_JOB_PATH/coverage/* $CI_PROJECT_DIR/coverage/ 2>/dev/null || true
+
+    - echo ">>> Nettoyage du conteneur éphémère"
+    - docker rm -f ${CONTAINER_NAME}_unit_test || true
+
+  after_script:
+    - docker rm -f ${CONTAINER_NAME}_unit_test 2>/dev/null || true
+    - rm -rf $RN_JOB_PATH || true
+
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+      junit: coverage/junit.xml
+    expire_in: 7 days
+
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+  allow_failure: false
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^bugfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^hotfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+
+
+# ========================================
+# JOB 3: E2E TEST - Tests E2E avec Cypress
+# ========================================
+e2e_test:
+  stage: test
+  tags:
+    - shell-3
+  cache: []
+  variables:
+    RN_JOB_PATH: "$RN_DEPLOY_PATHA003/portal/job_$CI_JOB_ID"
+  before_script:
+    - mkdir -p $RN_JOB_PATH
+    - rsync -av --delete --exclude 'node_modules' --exclude '.git' --exclude '.env*' --exclude '.next' ./ $RN_JOB_PATH
+    - cd $RN_JOB_PATH
+    - rm -rf cypress/videos cypress/screenshots
+  script:
+    - echo ">>> Lancement des tests E2E avec Cypress"
+
+    - echo ">>> Création du conteneur éphémère"
+    - docker create --name ${CONTAINER_NAME}_e2e_test $BASE_IMAGE_REACT_NODE sleep infinity
+
+    - echo ">>> Démarrage du conteneur"
+    - docker start ${CONTAINER_NAME}_e2e_test
+
+    - echo ">>> Suppression du code existant dans le conteneur"
+    - docker exec ${CONTAINER_NAME}_e2e_test sh -c "rm -rf /app/src /app/public /app/cypress"
+    - echo ">>> Injection du code dans le conteneur"
+    - docker cp $RN_JOB_PATH/src ${CONTAINER_NAME}_e2e_test:/app/src
+    - docker cp $RN_JOB_PATH/public ${CONTAINER_NAME}_e2e_test:/app/public
+    - docker cp $RN_JOB_PATH/cypress ${CONTAINER_NAME}_e2e_test:/app/cypress
+    - docker cp $RN_JOB_PATH/package.json ${CONTAINER_NAME}_e2e_test:/app/package.json
+    - docker cp $RN_JOB_PATH/tsconfig.json ${CONTAINER_NAME}_e2e_test:/app/tsconfig.json
+    - docker cp $RN_JOB_PATH/next.config.ts ${CONTAINER_NAME}_e2e_test:/app/next.config.ts
+    - docker cp $RN_JOB_PATH/cypress.config.ts ${CONTAINER_NAME}_e2e_test:/app/cypress.config.ts
+    - docker cp $RN_JOB_PATH/tailwind.config.ts ${CONTAINER_NAME}_e2e_test:/app/tailwind.config.ts
+    - docker cp $RN_JOB_PATH/postcss.config.mjs ${CONTAINER_NAME}_e2e_test:/app/postcss.config.mjs
+
+    - echo ">>> Build de l'application Next.js dans le conteneur"
+    - docker exec -e CI=true ${CONTAINER_NAME}_e2e_test sh -c "npm run build"
+
+    - echo ">>> Démarrage du serveur Next.js en background"
+    - docker exec -d -e CI=true ${CONTAINER_NAME}_e2e_test sh -c "npm run start"
+
+    - echo ">>> Attente du démarrage du serveur Next.js (jusqu'à 350s)..."
+    - |
+      for i in {1..350}; do
+        if ! docker inspect -f '{{.State.Running}}' ${CONTAINER_NAME}_e2e_test | grep -q true; then
+          echo "✗ Container crashé !"
+          docker logs ${CONTAINER_NAME}_e2e_test --tail=100
+          exit 1
+        fi
+        if docker exec ${CONTAINER_NAME}_e2e_test sh -c "curl -f http://localhost:3000 > /dev/null 2>&1"; then
+          echo "✓ Serveur Next.js prêt après ${i}s"
+          break
+        fi
+        if [ $i -eq 350 ]; then
+          echo "✗ Timeout: serveur non accessible après 350s"
+          docker logs ${CONTAINER_NAME}_e2e_test --tail=50
+          exit 1
+        fi
+        sleep 1
+      done
+
+    - echo ">>> Lancement des tests Cypress"
+    - docker exec -e CI=true ${CONTAINER_NAME}_e2e_test sh -c "npm run test:e2e"
+
+    - echo ">>> Tests E2E terminés, extraction des vidéos et screenshots"
+
+    - docker cp ${CONTAINER_NAME}_e2e_test:/app/cypress/videos $RN_JOB_PATH/cypress/videos || echo "Pas de vidéos Cypress"
+    - docker cp ${CONTAINER_NAME}_e2e_test:/app/cypress/screenshots $RN_JOB_PATH/cypress/screenshots || echo "Pas de screenshots Cypress"
+
+    - ls -la $RN_JOB_PATH/cypress/videos/ || echo "Pas de vidéos Cypress"
+    - ls -la $RN_JOB_PATH/cypress/screenshots/ || echo "Pas de screenshots Cypress"
+    - echo ">>> Copie des artefacts Cypress vers workspace GitLab"
+    - mkdir -p $CI_PROJECT_DIR/cypress/videos
+    - mkdir -p $CI_PROJECT_DIR/cypress/screenshots
+    - cp -r $RN_JOB_PATH/cypress/videos/* $CI_PROJECT_DIR/cypress/videos/ 2>/dev/null || true
+    - cp -r $RN_JOB_PATH/cypress/screenshots/* $CI_PROJECT_DIR/cypress/screenshots/ 2>/dev/null || true
+
+    - echo ">>> Nettoyage du conteneur éphémère"
+    - docker rm -f ${CONTAINER_NAME}_e2e_test || true
+
+  after_script:
+    - docker rm -f ${CONTAINER_NAME}_e2e_test 2>/dev/null || true
+    - rm -rf $RN_JOB_PATH || true
+
+  artifacts:
+    when: always
+    paths:
+      # - cypress/videos/
+      - cypress/screenshots/
+    expire_in: 7 days
+
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^bugfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^hotfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+
+# ========================================
+# JOB 4: SONARQUBE - Analyse de qualité du code
+# ========================================
+sonarqube:
+  stage: code_quality
+  tags:
+    - ubuntu-1
+  image: sonarsource/sonar-scanner-cli:latest
+  needs:
+    - job: unit_test
+      artifacts: true
+  before_script:
+    - apt-get update && apt-get install -y python3 curl
+  script:
+    - echo ">>> Analyse SonarQube avec coverage"
+    - ls -la coverage/ || echo "Warning No coverage found"
+    - export SONAR_BRANCH_KEY=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '_')
+
+    - |
+      sonar-scanner \
+        -Dsonar.projectKey=FIADEC-Portal \
+        -Dsonar.projectName="FIADEC-Portal" \
+        -Dsonar.sources=src \
+        -Dsonar.tests=src \
+        -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx \
+        -Dsonar.exclusions=**/node_modules/**,**/*.config.js,**/*.config.ts,**/coverage/**,**/cypress/** \
+        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+        -Dsonar.sourceEncoding=UTF-8 \
+        -Dsonar.host.url=$SONAR_HOST_URL \
+        -Dsonar.login=$SONAR_LOGIN
+
+    - echo ">>> Attente de la fin de l'analyse SonarQube"
+
+    # Attendre que l'analyse SonarQube soit terminée
+    - |
+      STATUS="PENDING"
+      CE_TASK_URL=$(grep ceTaskUrl .scannerwork/report-task.txt | cut -d'=' -f2-)
+      echo "Checking SonarQube task status at: $CE_TASK_URL"
+
+      while [[ "$STATUS" == "PENDING" || "$STATUS" == "IN_PROGRESS" ]]; do
+        sleep 5
+        STATUS=$(curl -s -u $SONAR_LOGIN: $CE_TASK_URL | python3 -c "import sys, json; print(json.load(sys.stdin)['task']['status'])")
+        echo "Current status: $STATUS"
+      done
+
+      echo ">>> Analysis complete. Checking Quality Gate..."
+
+      ANALYSIS_ID=$(curl -s -u $SONAR_LOGIN: $CE_TASK_URL | python3 -c "import sys, json; print(json.load(sys.stdin)['task']['analysisId'])")
+
+      QUALITY_GATE_STATUS=$(curl -s -u $SONAR_LOGIN: "$SONAR_HOST_URL/api/qualitygates/project_status?analysisId=$ANALYSIS_ID" | python3 -c "import sys, json; print(json.load(sys.stdin)['projectStatus']['status'])")
+
+      echo "Quality Gate Status: $QUALITY_GATE_STATUS"
+
+      if [ "$QUALITY_GATE_STATUS" != "OK" ]; then
+        echo " Quality Gate failed: $QUALITY_GATE_STATUS"
+        echo "View details at: $SONAR_HOST_URL/dashboard?id=-Admin"
+        exit 1
+      else
+        echo " Quality Gate passed!"
+        echo "View report at: $SONAR_HOST_URL/dashboard?id=FIADEC-Admin"
+      fi
+
+  allow_failure: false
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^feature\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^bugfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^hotfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+# ========================================
+# JOB 5: TRIVY SECURITY SCAN & SBOM
+# ========================================
+security_scan_and_sbom:
+  # Génération des nomenclatures logicielles (SBOM) et scan de vulnérabilités
+  stage: security
+  tags:
+    - shell-3
+  cache: []
+  dependencies: []
+  variables:
+    RN_JOB_PATH: "$RN_DEPLOY_PATHA003/portal/job_$CI_JOB_ID"
+  script:
+    - echo ">>> Synchronisation du code source vers le serveur pour le build de scan..."
+    - mkdir -p $RN_JOB_PATH
+    - rsync -av --delete --exclude 'node_modules' --exclude '.git' --exclude '.env*' --exclude '.next' ./ $RN_JOB_PATH
+    - |
+      sshpass -p "$RN_VM_PASS" ssh -o StrictHostKeyChecking=no $RN_VM_USER@$RN_DEPLOY_HOST "
+        set -e
+        mkdir -p $RN_JOB_PATH
+        cd $RN_JOB_PATH
+        
+        echo \">>> Construction de l'image locale éphémère pour le scan...\"
+        docker build -f Dockerfile.ci -t fiadec-scan:temp .
+        IMAGE_ID=\"fiadec-scan:temp\"
+        
+        echo \">>> Génération du rapport SBOM CycloneDX sur l'image ID : \$IMAGE_ID\"
+        docker run --rm \\
+          -v /var/run/docker.sock:/var/run/docker.sock \\
+          -v \$(pwd):/output \\
+          -v /home/gitlab-runner/trivy-cache:/root/.cache/trivy \\
+          aquasec/trivy:v1 image --skip-db-update --skip-version-check \$IMAGE_ID --format cyclonedx --output /output/sbom.json
+
+        echo \">>> Génération du rapport de vulnérabilités HTML Trivy...\"
+        docker run --rm \\
+          -v /var/run/docker.sock:/var/run/docker.sock \\
+          -v \$(pwd):/output \\
+          -v /home/gitlab-runner/trivy-cache:/root/.cache/trivy \\
+          aquasec/trivy:v1 image --scanners vuln,secret,misconfig --ignore-unfixed --skip-db-update --skip-version-check --timeout 15m \$IMAGE_ID --format template --template \"@/contrib/html.tpl\" --output /output/trivy-report.html
+      "
+
+    - echo ">>> Récupération des rapports de sécurité"
+    - mkdir -p security-reports
+    - sshpass -p "$RN_VM_PASS" scp $RN_VM_USER@$RN_DEPLOY_HOST:$RN_JOB_PATH/trivy-report.html ./security-reports/ || echo "Le fichier trivy-report.html n'a pas pu être copié"
+    - sshpass -p "$RN_VM_PASS" scp $RN_VM_USER@$RN_DEPLOY_HOST:$RN_JOB_PATH/sbom.json ./security-reports/ || echo "Le fichier sbom.json n'a pas pu être copié"
+
+    - |
+      echo ">>> Lancement du scan de vérification bloquant..."
+      sshpass -p "$RN_VM_PASS" ssh -o StrictHostKeyChecking=no $RN_VM_USER@$RN_DEPLOY_HOST "
+        set -e
+        cd $RN_JOB_PATH
+        IMAGE_ID=\"fiadec-scan:temp\"
+        echo \">>> Le job échouera si des vulnérabilités, secrets ou misconfigs CRITICAL sont détectés...\"
+        docker run --rm \\
+          -v /var/run/docker.sock:/var/run/docker.sock \\
+          -v /home/gitlab-runner/trivy-cache:/root/.cache/trivy \\
+          aquasec/trivy:v1 image --scanners vuln,secret,misconfig --ignore-unfixed --skip-db-update --skip-version-check --timeout 15m \$IMAGE_ID --format table --severity HIGH,CRITICAL --exit-code 1
+      "
+      
+  artifacts:
+    name: "Security_Reports_${CI_COMMIT_REF_SLUG}"
+    when: always
+    paths:
+      - security-reports/
+    reports:
+      cyclonedx: security-reports/sbom.json
+    expire_in: 30 days
+  allow_failure: false
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^hotfix\//'
+    - if: '$CI_COMMIT_REF_NAME =~ /^bugfix\//'
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+
+
+update version:
+  stage: version
+  image: docker:20.10.7
+  tags:
+    - ubuntu-1
+  dependencies: []
+  before_script:
+    - apk add --no-cache git bash
+    - git config --global user.email "DevOps@afreetech.com"
+    - git config --global user.name "DevOps Engineering"
+    - cd "$CI_PROJECT_DIR"
+  script: |
+    set -e
+    VERSION_FILE="VERSION"
+    CHANGELOG_FILE="CHANGELOG.md"
+
+    if echo "$CI_COMMIT_MESSAGE" | grep -q '\[rollback\]\|\[skip ci\]'; then
+      echo ">>> Skipping version increment"
+      [ -f "$VERSION_FILE" ] && cat "$VERSION_FILE" > VERSION || echo "0.0.0" > VERSION
+      exit 0
+    fi
+
+    if [ -f "$VERSION_FILE" ]; then
+      CURRENT_VERSION=$(cat "$VERSION_FILE" | tr -d '[:space:]')
+      echo ">>> Current version: $CURRENT_VERSION"
+    else
+      CURRENT_VERSION="0.0.0"
+      echo "$CURRENT_VERSION" > "$VERSION_FILE"
+    fi
+
+    MAJOR=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+    MINOR=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+    PATCH=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+
+    [ -z "$MAJOR" ] && MAJOR=0
+    [ -z "$MINOR" ] && MINOR=0
+    [ -z "$PATCH" ] && PATCH=0
+
+    echo ">>> Branch: $CI_COMMIT_BRANCH"
+
+    # Incrémenter automatiquement PATCH sur develop
+    echo ">>> Incrementing PATCH version on develop"
+    PATCH=$((PATCH + 1))
+
+    NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+
+    echo ">>> New version: $NEW_VERSION"
+    echo "$NEW_VERSION" > "$VERSION_FILE"
+
+    # --- Logique du Changelog ---
+    echo ">>> Generating changelog entries for $NEW_VERSION..."
+
+    PREVIOUS_VERSION_COMMIT_HASH=$(git log -2 --pretty=format:%H -- "$VERSION_FILE" | tail -n 1)
+
+    if [ -z "$PREVIOUS_VERSION_COMMIT_HASH" ]; then
+      echo ">>> No previous version commit found. Using all commits."
+      COMMIT_RANGE="HEAD"
+    else
+      echo ">>> Previous version commit: $PREVIOUS_VERSION_COMMIT_HASH"
+      COMMIT_RANGE="${PREVIOUS_VERSION_COMMIT_HASH}..HEAD"
+    fi
+
+    # Générer le changelog avec commits groupés par merge
+    CHANGELOG_ENTRIES=""
+
+    # Récupérer les commits de merge et stocker dans un fichier temporaire
+    git log --pretty=format:"%H|%s|%an|%as" $COMMIT_RANGE --first-parent --merges --invert-grep --grep="\[skip ci\]" --grep="\[rollback\]" --invert-grep --grep="Bump version to" > /tmp/merge_commits.txt
+
+    echo ">>> Contenu du fichier merge_commits:"
+    cat /tmp/merge_commits.txt
+
+    if [ -s /tmp/merge_commits.txt ]; then
+      while IFS='|' read -r merge_hash merge_subject merge_author merge_date; do
+        echo ">>> Processing merge: $merge_subject"
+        
+        # Extraire le nom de la branche (supporte plusieurs formats)
+        # Format 1: "Merge branch 'XXX' into YYY"
+        branch_name=$(echo "$merge_subject" | sed -n "s/.*Merge branch '\([^']*\)' into.*/\1/p")
+        
+        # Format 2: "Merge branch 'XXX' of http://..." 
+        if [ -z "$branch_name" ]; then
+          branch_name=$(echo "$merge_subject" | sed -n "s/.*Merge branch '\([^']*\)' of.*/\1/p")
+        fi
+        
+        # Format 3: "Merge branch 'XXX'" (simple)
+        if [ -z "$branch_name" ]; then
+          branch_name=$(echo "$merge_subject" | sed -n "s/.*Merge branch '\([^']*\)'.*/\1/p")
+        fi
+        
+        echo ">>> Extracted branch name: '$branch_name'"
+        
+        if [ -n "$branch_name" ]; then
+          CHANGELOG_ENTRIES="${CHANGELOG_ENTRIES}\n###  $branch_name - *mergé le $merge_date par $merge_author*\n"
+          
+          # Récupérer les commits de cette branche mergée
+          parent1=$(git rev-parse ${merge_hash}^1 2>/dev/null)
+          parent2=$(git rev-parse ${merge_hash}^2 2>/dev/null)
+          
+          if [ -n "$parent2" ]; then
+            branch_commits=$(git log --pretty=format:"  - %h [%as] %s - *par %an*" ${parent1}..${parent2} --no-merges)
+            CHANGELOG_ENTRIES="${CHANGELOG_ENTRIES}${branch_commits}\n"
+          fi
+        else
+          echo ">>> WARNING: Could not extract branch name from: $merge_subject"
+        fi
+      done < /tmp/merge_commits.txt
+      rm -f /tmp/merge_commits.txt
+    else
+      echo ">>> No merge commits found in range $COMMIT_RANGE"
+    fi
+
+    echo ">>> Changelog entries length: ${#CHANGELOG_ENTRIES}"
+
+    if [ -n "$CHANGELOG_ENTRIES" ]; then
+      echo ">>> Found new entries for changelog:"
+      echo "" > new_changelog.md
+      
+      if [ ! -f "$CHANGELOG_FILE" ]; then
+        echo "# CHANGELOG" >> new_changelog.md
+        echo "" >> new_changelog.md
+      else
+        cat "$CHANGELOG_FILE" | grep -v '^# CHANGELOG' > old_logs.md || echo "No old logs"
+      fi
+      
+      echo "## V ${NEW_VERSION} - Cette version contient les changements suivants ($(date +'%Y-%m-%d'));" >> new_changelog.md
+      echo "" >> new_changelog.md
+      echo -e "$CHANGELOG_ENTRIES" >> new_changelog.md
+      echo "" >> new_changelog.md
+      echo "# CHANGELOG" > "$CHANGELOG_FILE"
+      echo "" >> "$CHANGELOG_FILE"
+      cat new_changelog.md >> "$CHANGELOG_FILE"
+      if [ -f "old_logs.md" ]; then
+        cat old_logs.md >> "$CHANGELOG_FILE"
+        rm old_logs.md
+      fi
+      
+      echo ">>> $CHANGELOG_FILE updated and restructured."
+      
+      git add "$CHANGELOG_FILE"
+    else
+      echo ">>> No new changelog entries found. Updating only version."
+    fi
+
+    git add "$VERSION_FILE"
+
+    echo ">>> Committing changes"
+    if git commit -m "Bump version to $NEW_VERSION [skip ci]"; then
+      echo ">>> Commit successful"
+      REPO_URL="http://${REGISTRY_USER}:${REGISTRY_TOKEN}@10.10.10.247/${CI_PROJECT_PATH}.git"
+      git fetch "$REPO_URL" "$CI_COMMIT_REF_NAME" || echo ">>> Fetch failed"
+      git rebase "FETCH_HEAD" || echo ">>> Nothing to rebase"
+      git push "$REPO_URL" "HEAD:$CI_COMMIT_REF_NAME" || git push --force "$REPO_URL" "HEAD:$CI_COMMIT_REF_NAME" || echo ">>> Push failed"
+      
+      echo ">>> Creating Git tag v${NEW_VERSION}"
+      git tag -a "v${NEW_VERSION}" -m "Release version ${NEW_VERSION}" || echo ">>> Tag creation failed"
+      git push "$REPO_URL" "v${NEW_VERSION}" || echo ">>> Tag push failed or already exists"
+    else
+      echo ">>> Nothing to commit"
+    fi
+
+    echo ">>> Version updated successfully to $NEW_VERSION"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+  when: manual
+
+# ========================================
+# JOB 8: BUILD & PUSH DOCKER IMAGE - Après versioning
+# ========================================
+publish_docker_image:
+  stage: build
+  tags:
+    - shell-3
+  dependencies: []
+  variables:
+    RN_JOB_PATH: "$RN_DEPLOY_PATHA003/portal/job_$CI_JOB_ID"
+  before_script:
+    - mkdir -p $RN_JOB_PATH
+    - rsync -av --delete --exclude 'node_modules' --exclude '.git' --exclude '.env*' ./ $RN_JOB_PATH
+    - cd $RN_JOB_PATH
+  script:
+    - echo ">>> Récupération de la version"
+    - VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
+    - echo ">>> Building Docker image with tag v${VERSION}"
+
+
+    - echo ">>> Récupération de l'image de base depuis le registry"
+    - docker pull $BASE_IMAGE_REACT_NODE
+
+    - echo ">>> Tagging l'image de base comme version v${VERSION}"
+    - docker tag $BASE_IMAGE_REACT_NODE ${REGISTRY_URL}/fiadec-devs/web-apps/fiadec/portal:v${VERSION}
+    - docker tag $BASE_IMAGE_REACT_NODE ${REGISTRY_URL}/fiadec-devs/web-apps/fiadec/portal:latest
+
+    - echo ">>> Login to Docker registry"
+    - echo "$REGISTRY_TOKEN" | docker login ${REGISTRY_URL} -u ${REGISTRY_USER} --password-stdin
+
+
+    - echo ">>> Pushing to Docker registry"
+    - docker push ${REGISTRY_URL}/fiadec-devs/web-apps/fiadec/portal:v${VERSION}
+    - docker push ${REGISTRY_URL}/fiadec-devs/web-apps/fiadec/portal:latest
+
+    - echo ">>> Image pushed successfully"
+  after_script:
+    - rm -rf $RN_JOB_PATH || true
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+      when: manual
+    - if: '$CI_COMMIT_REF_NAME =~ /^tech\//'
+      when: manual
+
+# ========================================
+# JOB 7: DEPLOY QA - Déploiement en environnement QA
+# ========================================
+deploy:
+  stage: deploy
+  tags:
+    - shell-3
+  cache: []
+  dependencies: []
+  script:
+    - echo ">>> Copie des fichiers vers le serveur QA"
+    - sshpass -p "$QA_VM_PASS" rsync -a --exclude 'node_modules' --exclude '.git' --exclude '.next' --exclude 'dist' --exclude 'build' --exclude '.env*' -e "ssh -o StrictHostKeyChecking=no" $CI_PROJECT_DIR/ "$QA_VM_USER@$QA_HOST:$QA_DEPLOY_PATHA001/"
+    - |
+      sshpass -p "$QA_VM_PASS" ssh -o StrictHostKeyChecking=no $QA_VM_USER@$QA_HOST "
+        cd $QA_DEPLOY_PATHA001 &&
+        echo '>>> Démarrage des conteneurs en mode production' &&
+        docker compose -f docker-compose.prod.yml up -d &&
+        echo '>>> Vérification du statut des conteneurs' &&
+        docker compose -f docker-compose.prod.yml ps &&
+        echo '>>> Attente du démarrage de l'\''application (150s)' &&
+        sleep 150 &&
+        echo '>>> Test de santé de l'\''application' &&
+        HEALTH_CHECK=\$(curl -s -o /dev/null -w '%{http_code}' http://localhost:10014) &&
+        if [ \"\$HEALTH_CHECK\" = '200' ] || [ \"\$HEALTH_CHECK\" = '302' ] || [ \"\$HEALTH_CHECK\" = '301' ]; then
+          echo ' Application déployée avec succès et accessible (HTTP '\$HEALTH_CHECK')'
+          echo ' URL: http://$QA_HOST:10014'
+          exit 0
+        else
+          echo ' Application non accessible (HTTP '\$HEALTH_CHECK')'
+          docker compose -f docker-compose.prod.yml logs --tail=100
+          exit 1
+        fi
+      "
+      "
+  environment:
+    name: Quality Assurance
+    url: http://fiadec.local
+
+
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "develop"'
+
+

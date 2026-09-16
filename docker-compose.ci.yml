@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.ci
+      args:
+        - BASE_IMAGE_REACT_NODE=${BASE_IMAGE_REACT_NODE}
+    image: 10.10.10.247:5050/fiadec-devs/web-apps/fiadec/portal:ci-${CI_COMMIT_SHORT_SHA:-latest}
+    container_name: fiadec_portal_app_ci
+    ports:
+      - 10014:3000
+    environment:
+      - NODE_ENV=production
+    command: sh -c "npm run build && pm2-runtime npm --name fiadec-portal -- start"

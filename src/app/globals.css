@@ -1,0 +1,438 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    /* FIADEC-COOP-CA - palette "Institutional Trust" (light) */
+    --background: 15 40% 98%;
+    --foreground: 120 2% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 120 2% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 120 2% 11%;
+    --primary: 144 100% 21%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 136 45% 29%;
+    --secondary-foreground: 0 0% 100%;
+    --banner: 144 100% 12%;
+    --bannerCopyright: 143 100% 8%;
+    --banner-foreground: 0 0% 100%;
+    --tertiary: 220 25% 15%;
+    --tertiary-foreground: 0 0% 100%;
+    --muted: 0 9% 94%;
+    --muted-foreground: 115 10% 26%;
+    --accent: 139 40% 92%;
+    --accent-foreground: 143 100% 16%;
+    --destructive: 0 75% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 109 13% 76%;
+    --input: 109 13% 76%;
+    --ring: 144 100% 21%;
+    --chart-1: 144 100% 21%;
+    --chart-2: 136 45% 29%;
+    --chart-3: 45 95% 50%;
+    --chart-4: 195 60% 45%;
+    --chart-5: 0 75% 42%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* FIADEC-COOP-CA - palette "Institutional Trust" (dark) */
+    --background: 120 8% 7%;
+    --foreground: 72 8% 88%;
+    --card: 120 5% 12%;
+    --card-foreground: 72 8% 88%;
+    --popover: 120 5% 12%;
+    --popover-foreground: 72 8% 88%;
+    --primary: 146 100% 29%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 47% 46%;
+    --secondary-foreground: 0 0% 100%;
+    --banner: 144 100% 12%;
+    --bannerCopyright: 143 100% 8%;
+    --banner-foreground: 0 0% 100%;
+    --tertiary: 222 22% 20%;
+    --tertiary-foreground: 0 0% 93%;
+    --muted: 120 4% 11%;
+    --muted-foreground: 115 7% 63%;
+    --accent: 142 32% 17%;
+    --accent-foreground: 131 94% 75%;
+    --destructive: 358 75% 59%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 120 5% 17%;
+    --input: 120 5% 17%;
+    --ring: 146 100% 29%;
+    --chart-1: 146 100% 40%;
+    --chart-2: 140 47% 46%;
+    --chart-3: 45 95% 60%;
+    --chart-4: 195 60% 55%;
+    --chart-5: 358 75% 59%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Ensure all interactive elements respect theme */
+  button, input, select, textarea {
+    @apply text-foreground;
+  }
+}
+
+/* ============================================================
+   DARK MODE - override all hard-coded gray/white values
+   ============================================================ */
+
+/* Backgrounds */
+.dark .bg-white                                    { background-color: hsl(var(--card)); }
+.dark .bg-gray-50                                  { background-color: hsl(var(--muted)); }
+.dark .bg-gray-100                                 { background-color: hsl(var(--muted)); }
+.dark .bg-gray-200                                 { background-color: hsl(var(--muted)); }
+.dark .bg-gray-100\/80                             { background-color: hsl(var(--muted) / 0.8); }
+.dark .hover\:bg-gray-100:hover                    { background-color: hsl(var(--muted)); }
+.dark .hover\:bg-gray-50:hover                     { background-color: hsl(var(--muted)); }
+.dark .data-\[state\=open\]\:bg-gray-100[data-state="open"] { background-color: hsl(var(--muted)); }
+
+/* Borders */
+.dark .border-gray-200 { border-color: hsl(var(--border)); }
+.dark .border-gray-100 { border-color: hsl(var(--border)); }
+
+/* Text */
+.dark .text-black    { color: hsl(var(--foreground)); }
+.dark .text-gray-900 { color: hsl(var(--foreground)); }
+.dark .text-gray-800 { color: hsl(var(--foreground)); }
+.dark .text-gray-700 { color: hsl(var(--foreground) / 0.85); }
+.dark .text-gray-600 { color: hsl(var(--muted-foreground)); }
+.dark .text-gray-500 { color: hsl(var(--muted-foreground)); }
+.dark .text-gray-400 { color: hsl(var(--muted-foreground) / 0.7); }
+
+/* Forms & inputs - gérées par applyTheme.ts via --form-* variables (light + dark) */
+
+/* Colored badges - muted in dark */
+.dark .bg-blue-100   { background-color: hsl(var(--primary) / 0.15); }
+.dark .bg-blue-50    { background-color: hsl(var(--primary) / 0.08); }
+.dark .text-blue-600 { color: hsl(var(--primary)); }
+.dark .text-blue-500 { color: hsl(var(--primary) / 0.85); }
+.dark .bg-red-100    { background-color: hsl(var(--destructive) / 0.15); }
+.dark .bg-red-50     { background-color: hsl(var(--destructive) / 0.08); }
+.dark .text-red-600  { color: hsl(var(--destructive)); }
+.dark .bg-purple-100 { background-color: hsl(var(--secondary) / 0.15); }
+.dark .bg-green-50   { background-color: hsl(var(--primary) / 0.08); }
+.dark .bg-green-100  { background-color: hsl(var(--primary) / 0.15); }
+.dark .text-green-700 { color: hsl(var(--primary)); }
+.dark .text-green-600 { color: hsl(var(--primary)); }
+.dark .text-green-500 { color: hsl(var(--primary) / 0.8); }
+.dark .bg-yellow-50   { background-color: hsl(45 80% 50% / 0.1); }
+.dark .bg-yellow-100  { background-color: hsl(45 80% 50% / 0.15); }
+.dark .bg-orange-50   { background-color: hsl(25 80% 50% / 0.1); }
+.dark .bg-orange-100  { background-color: hsl(25 80% 50% / 0.15); }
+.dark .bg-indigo-50   { background-color: hsl(240 60% 50% / 0.1); }
+.dark .bg-indigo-100  { background-color: hsl(240 60% 50% / 0.15); }
+
+/* Ensure SVG icons inherit color in dark mode */
+.dark svg { color: inherit; }
+
+/* Tables - gérées par applyTheme.ts via --table-* variables (light + dark) */
+
+/* Dropdown & popover content */
+.dark [data-radix-popper-content-wrapper] { color: hsl(var(--foreground)); }
+
+/* Badges with fixed colors */
+.dark .bg-green-500  { background-color: hsl(var(--primary)); }
+.dark .bg-primary\/10 { background-color: hsl(var(--primary) / 0.1); }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.ql-container {
+  min-height: 200px;
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.ql-toolbar {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.aside-main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.editor-container {
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  overflow: hidden;
+  background: hsl(var(--card));
+}
+
+.toolbar {
+  display: flex;
+  gap: 5px;
+  padding: 8px;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted));
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ProseMirror .has-focus {
+  border-left: 3px solid hsl(var(--primary));
+  padding-left: 1rem;
+  transition: all 0.2s ease;
+  opacity: 1;
+}
+
+.ProseMirror > * {
+  transition: opacity 0.3s ease;
+  opacity: 0.6;
+}
+
+.ProseMirror img.has-focus {
+  outline: 4px solid hsl(var(--primary));
+  border-radius: 8px;
+}
+
+.toolbar button {
+  padding: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  color: hsl(var(--foreground));
+}
+
+.toolbar button.is-active {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--border));
+}
+
+.divider {
+  width: 1px;
+  background: hsl(var(--border));
+  margin: 0 8px;
+  height: 30px;
+}
+
+.prose-area {
+  padding: 20px;
+  min-height: 200px;
+  outline: none;
+}
+
+.prose-area .ProseMirror {
+  outline: none;
+}
+
+.ProseMirror h1 { font-size: 2em; font-weight: bold; }
+.ProseMirror h2 { font-size: 1.5em; font-weight: bold; }
+.ProseMirror ul { list-style-type: disc; padding-left: 20px; }
+.ProseMirror ol { list-style-type: decimal; padding-left: 20px; }
+.ProseMirror blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 10px;
+  font-style: italic;
+}
+
+.bubble-menu {
+  display: flex;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  padding: 5px;
+  border-radius: 5px;
+}
+.bubble-menu button {
+  color: hsl(var(--foreground));
+  border: none;
+  background: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.ProseMirror p[style*="text-align: center"],
+.ProseMirror h1[style*="text-align: center"],
+.ProseMirror h2[style*="text-align: center"] { text-align: center; }
+
+.ProseMirror p[style*="text-align: right"],
+.ProseMirror h1[style*="text-align: right"] { text-align: right; }
+
+.ProseMirror p[style*="text-align: justify"] { text-align: justify; }
+.ProseMirror s { text-decoration: line-through; }
+.ProseMirror u { text-decoration: underline; }
+
+.ProseMirror a { color: hsl(var(--primary)); text-decoration: underline; cursor: pointer; }
+.ProseMirror a:hover { color: hsl(var(--secondary)); }
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+}
+
+.color-picker-wrapper input[type="color"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.color-picker-wrapper svg { pointer-events: none; }
+
+.ProseMirror [data-youtube-video] {
+  cursor: move;
+  position: relative;
+  padding-bottom: 320px;
+  height: 0;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror [data-youtube-video] iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 320px !important;
+  border: 0;
+  border-radius: 8px;
+}
+
+.rbc-row .rbc-row-segment .rbc-event .rbc-event-content {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: hidden;
+  height: 50px;
+  display: block;
+}
+
+.rbc-calendar {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+}
+
+.rbc-header {
+  padding: 12px 4px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  background: hsl(var(--muted));
+  border-bottom: 1px solid hsl(var(--border));
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.rbc-month-view, .rbc-time-view, .rbc-agenda-view {
+  border: 1px solid hsl(var(--border));
+}
+
+.rbc-today { background-color: hsl(var(--accent) / 0.3); }
+.rbc-off-range-bg { background: hsl(var(--muted)); }
+.rbc-event { padding: 2px 6px; cursor: pointer; }
+.rbc-event:hover { opacity: 0.9; }
+.rbc-event:focus { outline: 2px solid hsl(var(--primary)); }
+
+.rbc-date-cell { padding: 6px; text-align: right; }
+.rbc-date-cell > a { color: hsl(var(--foreground)); font-size: 13px; }
+.rbc-date-cell.rbc-now > a { font-weight: 700; color: hsl(var(--primary)); }
+
+.rbc-month-row { border-top: 1px solid hsl(var(--border)); min-height: 80px; }
+.rbc-day-bg { border-left: 1px solid hsl(var(--border)); }
+.rbc-time-slot { border-top: 1px solid hsl(var(--border) / 0.5); }
+.rbc-time-header-content { border-left: 1px solid hsl(var(--border)); }
+.rbc-time-content { border-top: 1px solid hsl(var(--border)); }
+.rbc-timeslot-group { border-left: 1px solid hsl(var(--border)); }
+.rbc-current-time-indicator { background-color: hsl(var(--destructive)); height: 2px; }
+.rbc-day-slot .rbc-time-slot { border-top: 1px solid hsl(var(--border) / 0.3); }
+.rbc-time-header.rbc-overflowing { border-right: 1px solid hsl(var(--border)); }
+
+.rbc-agenda-view table.rbc-agenda-table { border: 1px solid hsl(var(--border)); }
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th {
+  padding: 12px;
+  background: hsl(var(--muted));
+  border-bottom: 1px solid hsl(var(--border));
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td {
+  padding: 12px;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.rbc-show-more { color: hsl(var(--primary)); font-size: 12px; font-weight: 500; }
+
+/* ============================================================
+   ACCESSIBILITY - Keyboard Navigation Focus Styles
+   ============================================================ */
+
+/* Visually obvious focus indicator for keyboard navigation across the entire application */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible,
+[role="checkbox"]:focus-visible,
+[role="radio"]:focus-visible,
+[role="switch"]:focus-visible {
+  outline: 2px solid hsl(var(--primary)) !important;
+  outline-offset: 2px !important;
+}
+
+/* High-contrast focus indicator for the login page elements over its dark gradient background */
+.login-page-root :focus-visible {
+  outline: 2px solid var(--login-accent, #10B981) !important;
+  outline-offset: 2px !important;
+}
+
