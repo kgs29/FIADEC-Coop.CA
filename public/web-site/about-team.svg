@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Illustration de l'équipe de conseillers FIADEC">
+  <defs>
+    <linearGradient id="bgTeam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4f1ea"/>
+      <stop offset="100%" stop-color="#e6f2ea"/>
+    </linearGradient>
+    <pattern id="dotsT" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#0b3320" opacity="0.06"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bgTeam)"/>
+  <rect width="1200" height="800" fill="url(#dotsT)"/>
+  <rect x="0" y="620" width="1200" height="180" fill="#145c34"/>
+  <circle cx="1050" cy="140" r="170" fill="#145c34" opacity="0.08"/>
+  <circle cx="120" cy="120" r="120" fill="#f2c14e" opacity="0.12"/>
+
+  <!-- Person A -->
+  <g transform="translate(210,560)">
+    <circle cx="0" cy="-330" r="72" fill="#8a5a34"/>
+    <path d="M-90,-220 Q0,-330 90,-220 L104,80 Q0,120 -104,80 Z" fill="#0f4d29"/>
+    <path d="M-90,-180 Q-150,-140 -160,-40" fill="none" stroke="#0f4d29" stroke-width="42" stroke-linecap="round"/>
+    <path d="M90,-180 Q150,-140 158,-30" fill="none" stroke="#0f4d29" stroke-width="42" stroke-linecap="round"/>
+  </g>
+
+  <!-- Person B (taller, front) -->
+  <g transform="translate(430,600)">
+    <circle cx="0" cy="-390" r="80" fill="#e7cdb0"/>
+    <path d="M-100,-260 Q0,-390 100,-260 L116,110 Q0,155 -116,110 Z" fill="#f2c14e"/>
+    <path d="M-100,-215 Q-166,-170 -178,-60" fill="none" stroke="#f2c14e" stroke-width="46" stroke-linecap="round"/>
+    <path d="M100,-215 Q166,-175 176,-50" fill="none" stroke="#f2c14e" stroke-width="46" stroke-linecap="round"/>
+  </g>
+
+  <!-- Person C (center, tallest) -->
+  <g transform="translate(650,585)">
+    <circle cx="0" cy="-410" r="82" fill="#c98a54"/>
+    <path d="M-104,-275 Q0,-410 104,-275 L120,120 Q0,168 -120,120 Z" fill="#ffffff"/>
+    <path d="M-104,-228 Q-172,-182 -184,-64" fill="none" stroke="#ffffff" stroke-width="48" stroke-linecap="round"/>
+    <path d="M104,-228 Q172,-186 182,-54" fill="none" stroke="#ffffff" stroke-width="48" stroke-linecap="round"/>
+  </g>
+
+  <!-- Person D -->
+  <g transform="translate(870,600)">
+    <circle cx="0" cy="-380" r="78" fill="#f2c14e"/>
+    <path d="M-96,-255 Q0,-380 96,-255 L112,105 Q0,150 -112,105 Z" fill="#145c34"/>
+    <path d="M-96,-210 Q-158,-166 -170,-56" fill="none" stroke="#145c34" stroke-width="44" stroke-linecap="round"/>
+    <path d="M96,-210 Q158,-170 168,-46" fill="none" stroke="#145c34" stroke-width="44" stroke-linecap="round"/>
+  </g>
+
+  <!-- Person E -->
+  <g transform="translate(1060,560)">
+    <circle cx="0" cy="-330" r="70" fill="#8a5a34"/>
+    <path d="M-88,-215 Q0,-330 88,-215 L102,80 Q0,118 -102,80 Z" fill="#e0e0e0"/>
+    <path d="M-88,-175 Q-146,-136 -156,-38" fill="none" stroke="#e0e0e0" stroke-width="40" stroke-linecap="round"/>
+    <path d="M88,-175 Q146,-140 154,-28" fill="none" stroke="#e0e0e0" stroke-width="40" stroke-linecap="round"/>
+  </g>
+</svg>

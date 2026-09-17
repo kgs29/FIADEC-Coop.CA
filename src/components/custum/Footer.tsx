@@ -139,8 +139,6 @@ export default function Footer(): React.ReactElement {
     { href: "/web", label: t("custum.header.nav.home") },
     { href: "/web/accounts", label: t("custum.header.nav.accounts") },
     { href: "/web/services", label: t("custum.header.nav.services") },
-    { href: "/web/realisations", label: t("custum.header.nav.realisations") },
-    { href: "/web/news", label: t("custum.header.nav.news") },
     { href: "/web/contact-us", label: t("custum.header.nav.contact_us") },
   ];
 

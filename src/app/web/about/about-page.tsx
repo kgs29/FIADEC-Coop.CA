@@ -87,6 +87,24 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Équipe */}
+      <section className="py-16 md:py-24 max-w-6xl mx-auto px-6">
+        <div className="rounded-xl overflow-hidden border border-border shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/web-site/about-team.svg"
+            alt={t("web_about.team_title")}
+            className="w-full h-[280px] md:h-[380px] object-cover"
+          />
+        </div>
+        <div className="text-center max-w-2xl mx-auto mt-8">
+          <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground mb-4">
+            {t("web_about.team_title")}
+          </h2>
+          <p className="font-inter text-muted-foreground leading-relaxed">{t("web_about.team_text")}</p>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 md:py-20 bg-background text-center">
         <div className="max-w-3xl mx-auto px-6">

@@ -50,12 +50,6 @@ export default function ChatWidget() {
       label: t("web_chat.topic_hours"),
       reply: t("web_chat.reply_hours", { phone: PHONE, location: LOCATION, email: EMAIL_ADDRESS }),
     },
-    {
-      key: "work",
-      label: t("web_chat.topic_work"),
-      reply: t("web_chat.reply_work"),
-      link: { href: "/web/realisations", label: t("web_chat.link_work") },
-    },
   ];
 
   const pushMessage = (msg: Omit<Message, "id">) => {

@@ -22,34 +22,43 @@
   <circle cx="150" cy="150" r="160" fill="#ffffff" opacity="0.05"/>
 
   <!-- round table -->
-  <ellipse cx="600" cy="620" rx="360" ry="70" fill="#ffffff" opacity="0.12"/>
-  <ellipse cx="600" cy="610" rx="360" ry="70" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.7"/>
+  <ellipse cx="600" cy="660" rx="380" ry="76" fill="#ffffff" opacity="0.12"/>
+  <ellipse cx="600" cy="650" rx="380" ry="76" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.7"/>
 
   <!-- documents on table -->
-  <rect x="540" y="580" width="120" height="80" rx="6" fill="#ffffff" opacity="0.85" transform="rotate(-4 600 620)"/>
-  <line x1="560" y1="600" x2="640" y2="596" stroke="#145c34" stroke-width="4" opacity="0.5"/>
-  <line x1="560" y1="614" x2="630" y2="610" stroke="#145c34" stroke-width="4" opacity="0.5"/>
+  <rect x="540" y="618" width="120" height="80" rx="6" fill="#ffffff" opacity="0.85" transform="rotate(-4 600 658)"/>
+  <line x1="560" y1="638" x2="640" y2="634" stroke="#145c34" stroke-width="4" opacity="0.5"/>
+  <line x1="560" y1="652" x2="630" y2="648" stroke="#145c34" stroke-width="4" opacity="0.5"/>
 
-  <!-- Person 1 (advisor) -->
-  <g transform="translate(360,610)">
-    <circle cx="0" cy="-190" r="54" fill="#f2c14e"/>
-    <path d="M-70,-30 Q0,-130 70,-30 L70,20 Q0,50 -70,20 Z" fill="#ffffff" opacity="0.92"/>
+  <!-- Person 1: advisor, standing, gesturing -->
+  <g transform="translate(300,300)">
+    <circle cx="0" cy="0" r="52" fill="#f2c14e"/>
+    <path d="M-20,-14 q20,-14 40,0" fill="none" stroke="#0b3320" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+    <path d="M-64,90 Q0,10 64,90 L74,330 Q0,360 -74,330 Z" fill="#ffffff" opacity="0.95"/>
+    <path d="M-64,120 Q-130,150 -150,230" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round" opacity="0.95"/>
+    <path d="M64,120 Q120,160 118,240" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round" opacity="0.95"/>
+    <rect x="-30" y="300" width="26" height="90" rx="10" fill="#0b3320" opacity="0.85"/>
+    <rect x="6" y="300" width="26" height="90" rx="10" fill="#0b3320" opacity="0.85"/>
   </g>
 
-  <!-- Person 2 (client) -->
-  <g transform="translate(600,600)">
-    <circle cx="0" cy="-200" r="54" fill="#ffffff"/>
-    <path d="M-70,-40 Q0,-140 70,-40 L70,10 Q0,40 -70,10 Z" fill="#f2c14e" opacity="0.9"/>
+  <!-- Person 2: client, seated at table, facing advisor -->
+  <g transform="translate(600,330)">
+    <circle cx="0" cy="0" r="50" fill="#e7cdb0"/>
+    <path d="M-62,86 Q0,8 62,86 L70,280 Q0,308 -70,280 Z" fill="#f2c14e" opacity="0.95"/>
+    <path d="M-62,112 Q-108,150 -110,220" fill="none" stroke="#f2c14e" stroke-width="30" stroke-linecap="round" opacity="0.95"/>
+    <path d="M62,112 Q108,150 108,215" fill="none" stroke="#f2c14e" stroke-width="30" stroke-linecap="round" opacity="0.95"/>
   </g>
 
-  <!-- Person 3 (client) -->
-  <g transform="translate(840,610)">
-    <circle cx="0" cy="-190" r="54" fill="#ffffff" opacity="0.85"/>
-    <path d="M-70,-30 Q0,-130 70,-30 L70,20 Q0,50 -70,20 Z" fill="#ffffff" opacity="0.7"/>
+  <!-- Person 3: client, seated -->
+  <g transform="translate(880,320)">
+    <circle cx="0" cy="0" r="48" fill="#ffffff" opacity="0.9"/>
+    <path d="M-58,82 Q0,8 58,82 L66,270 Q0,296 -66,270 Z" fill="#ffffff" opacity="0.7"/>
+    <path d="M-58,106 Q-96,140 -98,205" fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round" opacity="0.7"/>
+    <path d="M58,106 Q96,140 96,205" fill="none" stroke="#ffffff" stroke-width="28" stroke-linecap="round" opacity="0.7"/>
   </g>
 
   <!-- small plant on table -->
-  <g transform="translate(760,590)">
+  <g transform="translate(800,610)">
     <rect x="-16" y="0" width="32" height="26" rx="4" fill="#ffffff" opacity="0.8"/>
     <path d="M0,0 C-6,-30 -26,-34 -30,-54 C-4,-52 4,-30 0,0 Z" fill="#f2c14e" opacity="0.9"/>
     <path d="M0,0 C6,-24 22,-28 26,-44 C4,-42 -2,-24 0,0 Z" fill="#ffffff" opacity="0.85"/>

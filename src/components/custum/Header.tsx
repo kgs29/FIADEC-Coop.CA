@@ -1,8 +1,6 @@
 "use client";
 
-import { useAuthReady } from "@/app/providers";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { useAppSelector } from "@/hooks/redux-toolkit";
 import { useLogoutMutation } from "@/store/apis/auth/authentication.api";
 import i18n from "@/locale/i18n";
 import { t } from "i18next";
@@ -42,9 +40,6 @@ export default function Header() {
     setCurrentLang(lang);
   };
 
-  const isAuthReady = useAuthReady();
-  const user = useAppSelector((state) => state.auth);
-
   const aboutLinks: SimpleLink[] = [
     { href: "/web/about", label: t("custum.header.nav.about"), isActive: pathname === "/web/about" },
     { href: "/web/faq", label: t("custum.header.nav.faq"), isActive: pathname === "/web/faq" },
@@ -67,13 +62,6 @@ export default function Header() {
       isActive: pathname === "/web/services",
     },
     {
-      type: "link",
-      href: "/web/realisations",
-      label: t("custum.header.nav.realisations"),
-      isActive: pathname === "/web/realisations",
-    },
-    { type: "link", href: "/web/news", label: t("custum.header.nav.news"), isActive: pathname === "/web/news" },
-    {
       type: "group",
       label: t("custum.header.nav.company"),
       isActive: aboutLinks.some((item) => item.isActive),
@@ -86,22 +74,6 @@ export default function Header() {
       isActive: pathname === "/web/contact-us",
     },
   ];
-
-  let authButton: React.ReactNode;
-  if (isAuthReady && user?.isLoggedIn) {
-    // Le lien vers le back-office (/admin) n'est volontairement pas affiché
-    // dans l'en-tête du site public.
-    authButton = null;
-  } else {
-    authButton = (
-      <Link
-        href="/web/login"
-        className="px-6 py-2.5 bg-primary text-sm rounded-full text-primary-foreground font-bold shadow-md hover:bg-primary/90 transition-all duration-300"
-      >
-        {t("custum.header.client_space")}
-      </Link>
-    );
-  }
 
   return (
     <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 border-b border-border shadow-sm">
@@ -166,7 +138,6 @@ export default function Header() {
           <div className="hidden lg:flex items-center gap-2">
             <LangSwitcher currentLang={currentLang} onChange={handleLangChange} />
             <ThemeToggle />
-            {authButton}
           </div>
 
           <div className="lg:hidden flex items-center gap-2">
@@ -234,7 +205,6 @@ export default function Header() {
                 </div>
               ),
             )}
-            <div className="pt-2 px-2">{authButton}</div>
           </div>
         )}
       </div>

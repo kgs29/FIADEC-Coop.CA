@@ -45,4 +45,21 @@
   <circle cx="205" cy="230" r="10" fill="#f2c14e" opacity="0.9"/>
   <circle cx="255" cy="180" r="6" fill="#ffffff" opacity="0.6"/>
   <circle cx="150" cy="150" r="4" fill="#ffffff" opacity="0.5"/>
+
+  <!-- Parent and child saving together -->
+  <g transform="translate(760,470)">
+    <!-- parent -->
+    <circle cx="0" cy="0" r="54" fill="#e7cdb0"/>
+    <path d="M-66,90 Q0,10 66,90 L76,340 Q0,372 -76,340 Z" fill="#ffffff" opacity="0.95"/>
+    <path d="M10,100 Q70,130 90,190" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" opacity="0.95"/>
+    <!-- child -->
+    <g transform="translate(150,150)">
+      <circle cx="0" cy="0" r="38" fill="#f2c14e"/>
+      <path d="M-46,64 Q0,10 46,64 L52,230 Q0,252 -52,230 Z" fill="#145c34" opacity="0.9"/>
+      <path d="M-46,84 Q-80,100 -86,150" fill="none" stroke="#145c34" stroke-width="22" stroke-linecap="round" opacity="0.9"/>
+    </g>
+    <!-- coin passing from parent's hand into piggy bank direction -->
+    <circle cx="115" cy="110" r="20" fill="#f2c14e" stroke="#ffffff" stroke-width="3"/>
+    <text x="115" y="118" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0b3320" text-anchor="middle">₣</text>
+  </g>
 </svg>

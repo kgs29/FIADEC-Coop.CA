@@ -64,6 +64,16 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Accompagnement */}
+      <section className="bg-background">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/web-site/services-people.svg"
+          alt={t("web_services.hero_title")}
+          className="w-full h-[220px] md:h-[320px] object-cover"
+        />
+      </section>
+
       {/* Product grid */}
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-6xl mx-auto px-6">
@@ -110,12 +120,6 @@ export default function ServicesPage() {
               className="px-8 py-4 bg-card text-primary font-bold rounded-full shadow-lg hover:bg-background transition-all duration-300"
             >
               {t("web_services.cta_button_consultation")}
-            </Link>
-            <Link
-              href="/web/realisations"
-              className="px-8 py-4 border-2 border-primary-foreground text-primary-foreground font-bold rounded-full hover:bg-primary-foreground/10 transition-all duration-300"
-            >
-              {t("web_services.cta_button_realisations")}
             </Link>
           </div>
         </div>

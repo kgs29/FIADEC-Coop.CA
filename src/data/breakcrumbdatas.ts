@@ -52,7 +52,6 @@ export const breadcrumbConfig: BreadcrumbConfig = {
   "^/web/about$": "custum.header.nav.about",
   "^/web/projects$": "custum.header.nav.projects",
   "^/web/projects/[^/]+$": "project_details",
-  "^/web/news$": "custum.header.nav.news",
   "^/web/contact-us$": "custum.header.nav.contact_us",
   "^/web/faq$": "custum.header.nav.faq",
   "^/web/careers$": "custum.header.nav.careers",

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" width="1600" height="600" role="img" aria-label="Illustration conseiller aidant un client FIADEC">
+  <defs>
+    <linearGradient id="bgServices" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0b3320"/>
+      <stop offset="100%" stop-color="#227a44"/>
+    </linearGradient>
+    <pattern id="dotsS" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="600" fill="url(#bgServices)"/>
+  <rect width="1600" height="600" fill="url(#dotsS)"/>
+  <circle cx="1400" cy="120" r="200" fill="#ffffff" opacity="0.05"/>
+  <circle cx="150" cy="500" r="180" fill="#ffffff" opacity="0.05"/>
+
+  <!-- Desk -->
+  <rect x="480" y="430" width="640" height="34" rx="8" fill="#ffffff" opacity="0.9"/>
+  <rect x="500" y="464" width="20" height="90" fill="#ffffff" opacity="0.5"/>
+  <rect x="1080" y="464" width="20" height="90" fill="#ffffff" opacity="0.5"/>
+
+  <!-- Documents / laptop on desk -->
+  <rect x="700" y="380" width="130" height="60" rx="8" fill="#145c34" opacity="0.9"/>
+  <rect x="710" y="390" width="110" height="40" rx="4" fill="#8fd6a8" opacity="0.5"/>
+  <rect x="860" y="395" width="90" height="40" rx="6" fill="#ffffff" opacity="0.85"/>
+
+  <!-- Advisor (standing, left of desk) -->
+  <g transform="translate(560,430)">
+    <circle cx="0" cy="-260" r="58" fill="#c98a54"/>
+    <path d="M-72,-172 Q0,-260 72,-172 L84,60 Q0,92 -84,60 Z" fill="#ffffff"/>
+    <path d="M-72,-140 Q-118,-110 -128,-30" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
+    <path d="M72,-140 Q118,-114 126,-20" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round"/>
+  </g>
+
+  <!-- Client (seated, right of desk) -->
+  <g transform="translate(1040,430)">
+    <circle cx="0" cy="-220" r="52" fill="#e7cdb0"/>
+    <path d="M-64,-150 Q0,-220 64,-150 L74,70 Q0,98 -74,70 Z" fill="#f2c14e"/>
+    <path d="M-64,-120 Q-104,-96 -110,-30" fill="none" stroke="#f2c14e" stroke-width="30" stroke-linecap="round"/>
+    <path d="M64,-120 Q104,-98 108,-20" fill="none" stroke="#f2c14e" stroke-width="30" stroke-linecap="round"/>
+  </g>
+
+  <!-- Second client waiting -->
+  <g transform="translate(1230,440)">
+    <circle cx="0" cy="-190" r="46" fill="#8a5a34"/>
+    <path d="M-56,-128 Q0,-190 56,-128 L64,60 Q0,86 -64,60 Z" fill="#145c34" opacity="0.9"/>
+  </g>
+
+  <!-- Approval check badge -->
+  <circle cx="880" cy="330" r="34" fill="#f2c14e"/>
+  <path d="M864,330 L876,344 L900,312" fill="none" stroke="#0b3320" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
