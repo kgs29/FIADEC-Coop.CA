@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Illustration financement des entreprises FIADEC">
+  <defs>
+    <linearGradient id="bgPme" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#062615"/>
+      <stop offset="55%" stop-color="#0f4d29"/>
+      <stop offset="100%" stop-color="#227a44"/>
+    </linearGradient>
+    <radialGradient id="glowP" cx="75%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dotsP" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgPme)"/>
+  <rect width="1600" height="900" fill="url(#glowP)"/>
+  <rect width="1600" height="900" fill="url(#dotsP)"/>
+
+  <circle cx="200" cy="170" r="220" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1420" cy="740" r="200" fill="#ffffff" opacity="0.05"/>
+
+  <!-- Storefront -->
+  <g transform="translate(150,360)">
+    <rect x="0" y="80" width="330" height="220" rx="10" fill="#ffffff" opacity="0.14" stroke="#ffffff" stroke-width="6"/>
+    <rect x="30" y="150" width="80" height="70" rx="6" fill="#ffffff" opacity="0.85"/>
+    <rect x="220" y="150" width="80" height="70" rx="6" fill="#ffffff" opacity="0.85"/>
+    <rect x="140" y="180" width="60" height="120" rx="6" fill="#f2c14e" opacity="0.95"/>
+    <g>
+      <polygon points="-15,80 345,80 320,10 10,10" fill="#ffffff" opacity="0.9"/>
+      <polygon points="-15,80 30,80 35,10 10,10" fill="#227a44"/>
+      <polygon points="105,80 150,80 145,10 100,10" fill="#227a44"/>
+      <polygon points="225,80 270,80 260,10 215,10" fill="#227a44"/>
+    </g>
+  </g>
+
+  <!-- Growth bar chart -->
+  <g transform="translate(920,760)">
+    <rect x="0" y="-90" width="70" height="90" rx="8" fill="#ffffff" opacity="0.55"/>
+    <rect x="100" y="-150" width="70" height="150" rx="8" fill="#ffffff" opacity="0.7"/>
+    <rect x="200" y="-230" width="70" height="230" rx="8" fill="#ffffff" opacity="0.85"/>
+    <rect x="300" y="-320" width="70" height="320" rx="8" fill="#f2c14e" opacity="0.95"/>
+    <path d="M10,-100 L120,-170 L220,-250 L330,-360" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+    <polygon points="330,-360 300,-352 322,-330" fill="#ffffff"/>
+  </g>
+
+  <circle cx="700" cy="230" r="7" fill="#f2c14e" opacity="0.9"/>
+  <circle cx="1350" cy="280" r="5" fill="#ffffff" opacity="0.6"/>
+</svg>

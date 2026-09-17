@@ -11,7 +11,7 @@ export const useNavigateBack = () => {
     if (links.length > 1) {
       router.push(links[links.length - 2].path);
     } else {
-      router.push("/admin"); 
+      router.push("/web");
     }
   };
 };

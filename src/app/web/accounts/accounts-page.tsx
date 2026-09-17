@@ -39,7 +39,7 @@ export default function AccountsPage() {
           </div>
           <div className="md:w-1/2 relative h-[280px] md:h-[360px] w-full rounded-2xl overflow-hidden shadow-sm border border-border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/hero3.jpg" alt={t("web_accounts.hero_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/compte-courant.jpg" alt={t("web_accounts.hero_title")} className="w-full h-full object-cover" />
           </div>
         </div>
       </section>

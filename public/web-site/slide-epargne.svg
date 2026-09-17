@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Illustration épargne FIADEC">
+  <defs>
+    <linearGradient id="bgEpargne" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#003d18"/>
+      <stop offset="55%" stop-color="#006B2B"/>
+      <stop offset="100%" stop-color="#1c8a49"/>
+    </linearGradient>
+    <radialGradient id="glowE" cx="72%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dotsE" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgEpargne)"/>
+  <rect width="1600" height="900" fill="url(#glowE)"/>
+  <rect width="1600" height="900" fill="url(#dotsE)"/>
+
+  <circle cx="1360" cy="150" r="260" fill="#ffffff" opacity="0.04"/>
+  <circle cx="120" cy="760" r="200" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1250" cy="760" r="90" fill="#f2c14e" opacity="0.10"/>
+
+  <!-- Piggy bank -->
+  <g transform="translate(1120,300)">
+    <ellipse cx="120" cy="230" rx="230" ry="150" fill="#ffffff" opacity="0.14"/>
+    <ellipse cx="120" cy="230" rx="230" ry="150" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.9"/>
+    <circle cx="330" cy="205" r="46" fill="#ffffff" opacity="0.14"/>
+    <circle cx="330" cy="205" r="46" fill="none" stroke="#ffffff" stroke-width="6" opacity="0.9"/>
+    <circle cx="348" cy="195" r="7" fill="#ffffff"/>
+    <polygon points="20,110 60,60 90,120" fill="#ffffff" opacity="0.14" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+    <polygon points="90,105 130,55 155,118" fill="#ffffff" opacity="0.14" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="-8" y="340" width="26" height="70" rx="10" fill="#ffffff" opacity="0.9"/>
+    <rect x="90" y="360" width="26" height="70" rx="10" fill="#ffffff" opacity="0.9"/>
+    <rect x="170" y="360" width="26" height="70" rx="10" fill="#ffffff" opacity="0.9"/>
+    <rect x="255" y="340" width="26" height="70" rx="10" fill="#ffffff" opacity="0.9"/>
+    <path d="M60,265 q60,-24 120,0" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+    <rect x="95" y="70" width="70" height="16" rx="8" fill="#f2c14e" transform="rotate(-8 130 78)"/>
+    <path d="M330,10 q30,60 0,120" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-dasharray="4 14" opacity="0.7"/>
+    <circle cx="330" cy="-20" r="26" fill="#f2c14e"/>
+    <text x="330" y="-12" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#003d18" text-anchor="middle">₣</text>
+  </g>
+
+  <circle cx="205" cy="230" r="10" fill="#f2c14e" opacity="0.9"/>
+  <circle cx="255" cy="180" r="6" fill="#ffffff" opacity="0.6"/>
+  <circle cx="150" cy="150" r="4" fill="#ffffff" opacity="0.5"/>
+</svg>

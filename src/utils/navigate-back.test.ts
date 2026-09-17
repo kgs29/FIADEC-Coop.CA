@@ -44,7 +44,7 @@ describe("useNavigateBack", () => {
     expect(mockPush).toHaveBeenCalledWith("/admin/users");
   });
 
-  it("navigue vers '/admin' quand links.length === 1", () => {
+  it("navigue vers '/web' quand links.length === 1", () => {
     mockGenerateBreadcrumbs.mockReturnValue([
       { path: "/admin", title: "Admin" },
     ]);
@@ -52,25 +52,25 @@ describe("useNavigateBack", () => {
     const { result } = renderHook(() => useNavigateBack());
     result.current();
 
-    expect(mockPush).toHaveBeenCalledWith("/admin");
+    expect(mockPush).toHaveBeenCalledWith("/web");
   });
 
-  it("navigue vers '/admin' quand links est vide", () => {
+  it("navigue vers '/web' quand links est vide", () => {
     mockGenerateBreadcrumbs.mockReturnValue([]);
 
     const { result } = renderHook(() => useNavigateBack());
     result.current();
 
-    expect(mockPush).toHaveBeenCalledWith("/admin");
+    expect(mockPush).toHaveBeenCalledWith("/web");
   });
 
-  it("navigue vers '/admin' quand links.length === 0", () => {
+  it("navigue vers '/web' quand links.length === 0", () => {
     mockGenerateBreadcrumbs.mockReturnValue([]);
 
     const { result } = renderHook(() => useNavigateBack());
     result.current();
 
     expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(mockPush).toHaveBeenCalledWith("/admin");
+    expect(mockPush).toHaveBeenCalledWith("/web");
   });
 });

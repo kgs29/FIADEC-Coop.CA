@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" role="img" aria-label="Illustration institution de confiance FIADEC">
+  <defs>
+    <linearGradient id="bgAbout" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#062615"/>
+      <stop offset="60%" stop-color="#0f4d29"/>
+      <stop offset="100%" stop-color="#227a44"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="65%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dotsA" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bgAbout)"/>
+  <rect width="1200" height="900" fill="url(#glowA)"/>
+  <rect width="1200" height="900" fill="url(#dotsA)"/>
+
+  <circle cx="980" cy="180" r="220" fill="#ffffff" opacity="0.05"/>
+  <circle cx="150" cy="760" r="180" fill="#ffffff" opacity="0.05"/>
+
+  <!-- Network of community dots -->
+  <g stroke="#ffffff" stroke-width="2.5" opacity="0.35">
+    <line x1="220" y1="230" x2="600" y2="430"/>
+    <line x1="980" y1="240" x2="600" y2="430"/>
+    <line x1="260" y1="650" x2="600" y2="430"/>
+    <line x1="940" y1="660" x2="600" y2="430"/>
+    <line x1="220" y1="230" x2="260" y2="650"/>
+    <line x1="980" y1="240" x2="940" y2="660"/>
+  </g>
+  <g fill="#f2c14e">
+    <circle cx="220" cy="230" r="9"/>
+    <circle cx="980" cy="240" r="9"/>
+    <circle cx="260" cy="650" r="9"/>
+    <circle cx="940" cy="660" r="9"/>
+  </g>
+
+  <!-- Shield with check -->
+  <g transform="translate(600,430)">
+    <polygon points="0,-190 160,-130 160,10 0,190 -160,10 -160,-130"
+             fill="#ffffff" opacity="0.16" stroke="#ffffff" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M-70,-10 L-15,50 L90,-80" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Building silhouette base -->
+  <g transform="translate(430,700)" opacity="0.9">
+    <rect x="0" y="0" width="340" height="18" rx="4" fill="#ffffff"/>
+    <rect x="20" y="-120" width="26" height="120" fill="#ffffff" opacity="0.8"/>
+    <rect x="70" y="-150" width="26" height="150" fill="#ffffff" opacity="0.85"/>
+    <rect x="120" y="-100" width="26" height="100" fill="#ffffff" opacity="0.75"/>
+    <rect x="170" y="-170" width="26" height="170" fill="#ffffff" opacity="0.9"/>
+    <rect x="220" y="-110" width="26" height="110" fill="#ffffff" opacity="0.78"/>
+    <rect x="270" y="-140" width="26" height="140" fill="#ffffff" opacity="0.85"/>
+  </g>
+</svg>

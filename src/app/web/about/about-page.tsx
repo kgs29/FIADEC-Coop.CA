@@ -41,7 +41,7 @@ export default function AboutPage() {
           </div>
           <div className="relative h-[320px] lg:h-[420px] rounded-xl overflow-hidden border border-border shadow-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/hero1.jpg" alt={t("web_about.institutional_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/about-hero.svg" alt={t("web_about.institutional_title")} className="w-full h-full object-cover" />
           </div>
         </div>
       </section>

@@ -325,7 +325,7 @@ const LoginComponent = () => {
     dispatch(loginSuccess({ isLoggedIn: true, user: token.user }));
     localStorage.setItem("access", JSON.stringify(token.access));
     localStorage.setItem("refresh", JSON.stringify(token.refresh));
-    redirect(token.user.is_editor ? "/editors" : "/admin");
+    redirect(token.user.is_editor ? "/editors" : "/web");
   }
 
   /* ──────────────────────────────────────────────────────────── */

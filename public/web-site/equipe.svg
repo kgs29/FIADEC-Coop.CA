@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" role="img" aria-label="Illustration équipe et accompagnement FIADEC">
+  <defs>
+    <linearGradient id="bgEquipe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b3320"/>
+      <stop offset="55%" stop-color="#145c34"/>
+      <stop offset="100%" stop-color="#2f9152"/>
+    </linearGradient>
+    <radialGradient id="glowQ" cx="30%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dotsQ" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#ffffff" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#bgEquipe)"/>
+  <rect width="1200" height="900" fill="url(#glowQ)"/>
+  <rect width="1200" height="900" fill="url(#dotsQ)"/>
+
+  <circle cx="1000" cy="720" r="220" fill="#ffffff" opacity="0.05"/>
+  <circle cx="150" cy="150" r="160" fill="#ffffff" opacity="0.05"/>
+
+  <!-- round table -->
+  <ellipse cx="600" cy="620" rx="360" ry="70" fill="#ffffff" opacity="0.12"/>
+  <ellipse cx="600" cy="610" rx="360" ry="70" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.7"/>
+
+  <!-- documents on table -->
+  <rect x="540" y="580" width="120" height="80" rx="6" fill="#ffffff" opacity="0.85" transform="rotate(-4 600 620)"/>
+  <line x1="560" y1="600" x2="640" y2="596" stroke="#145c34" stroke-width="4" opacity="0.5"/>
+  <line x1="560" y1="614" x2="630" y2="610" stroke="#145c34" stroke-width="4" opacity="0.5"/>
+
+  <!-- Person 1 (advisor) -->
+  <g transform="translate(360,610)">
+    <circle cx="0" cy="-190" r="54" fill="#f2c14e"/>
+    <path d="M-70,-30 Q0,-130 70,-30 L70,20 Q0,50 -70,20 Z" fill="#ffffff" opacity="0.92"/>
+  </g>
+
+  <!-- Person 2 (client) -->
+  <g transform="translate(600,600)">
+    <circle cx="0" cy="-200" r="54" fill="#ffffff"/>
+    <path d="M-70,-40 Q0,-140 70,-40 L70,10 Q0,40 -70,10 Z" fill="#f2c14e" opacity="0.9"/>
+  </g>
+
+  <!-- Person 3 (client) -->
+  <g transform="translate(840,610)">
+    <circle cx="0" cy="-190" r="54" fill="#ffffff" opacity="0.85"/>
+    <path d="M-70,-30 Q0,-130 70,-30 L70,20 Q0,50 -70,20 Z" fill="#ffffff" opacity="0.7"/>
+  </g>
+
+  <!-- small plant on table -->
+  <g transform="translate(760,590)">
+    <rect x="-16" y="0" width="32" height="26" rx="4" fill="#ffffff" opacity="0.8"/>
+    <path d="M0,0 C-6,-30 -26,-34 -30,-54 C-4,-52 4,-30 0,0 Z" fill="#f2c14e" opacity="0.9"/>
+    <path d="M0,0 C6,-24 22,-28 26,-44 C4,-42 -2,-24 0,0 Z" fill="#ffffff" opacity="0.85"/>
+  </g>
+</svg>

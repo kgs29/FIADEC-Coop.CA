@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Award,
@@ -13,6 +14,12 @@ import {
   Wallet,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const stats = [
   { key: "stat_1", Icon: Users },
@@ -26,8 +33,32 @@ const products = [
   { key: "product_3", Icon: Store },
 ];
 
+const heroSlides = [
+  { key: "hero_slide_1", image: "/web-site/slide-epargne.svg" },
+  { key: "hero_slide_2", image: "/web-site/slide-credit.svg" },
+  { key: "hero_slide_3", image: "/web-site/compte-courant.jpg" },
+  { key: "hero_slide_4", image: "/web-site/slide-pme.svg" },
+];
+
 const HomePage = () => {
   const { t } = useTranslation();
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const autoplayPaused = useRef(false);
+
+  useEffect(() => {
+    if (!api) return;
+    setCurrent(api.selectedScrollSnap());
+    api.on("select", () => setCurrent(api.selectedScrollSnap()));
+  }, [api]);
+
+  useEffect(() => {
+    if (!api) return;
+    const interval = setInterval(() => {
+      if (!autoplayPaused.current) api.scrollNext();
+    }, 5500);
+    return () => clearInterval(interval);
+  }, [api]);
 
   const testimonials = [
     {
@@ -52,41 +83,70 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col w-full font-inter">
-      {/* Hero */}
-      <section className="relative bg-muted overflow-hidden">
-        <div className="container mx-auto px-6 py-16 md:py-24 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-8">
-            <h1 className="font-poppins text-4xl md:text-5xl font-bold text-foreground leading-tight">
-              {t("web_home.hero_title_before")}{" "}
-              <span className="text-primary">{t("web_home.hero_title_highlight")}</span>{" "}
-              {t("web_home.hero_title_after")}
-            </h1>
-            <p className="font-inter text-lg text-muted-foreground max-w-xl">
-              {t("web_home.hero_subtitle")}
-            </p>
-            <div className="flex flex-wrap gap-4 mt-2">
-              <Link
-                href="/web/services"
-                className="bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary/90 transition-all font-bold shadow-sm"
-              >
-                {t("web_home.hero_cta_primary")}
-              </Link>
-              <Link
-                href="/web/contact-us"
-                className="border-2 border-primary text-primary px-8 py-4 rounded-lg hover:bg-primary/10 transition-all font-bold"
-              >
-                {t("web_home.hero_cta_secondary")}
-              </Link>
-            </div>
-          </div>
-          <div className="relative h-[320px] lg:h-[460px] rounded-xl overflow-hidden shadow-sm border border-border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/web-site/hero5.jpg"
-              alt={t("web_home.hero_title_highlight")}
-              className="absolute inset-0 w-full h-full object-cover"
+      {/* Hero Carousel */}
+      <section
+        className="relative overflow-hidden"
+        onMouseEnter={() => (autoplayPaused.current = true)}
+        onMouseLeave={() => (autoplayPaused.current = false)}
+      >
+        <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
+          <CarouselContent className="ml-0">
+            {heroSlides.map(({ key, image }, index) => (
+              <CarouselItem key={key} className="pl-0">
+                <div className="relative h-[520px] md:h-[620px] w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={image}
+                    alt={t(`web_home.${key}_title`)}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
+                  <div className="relative z-10 h-full container mx-auto px-6 flex flex-col justify-end pb-20 md:pb-24">
+                    <div className="max-w-xl">
+                      <h1 className="font-poppins text-3xl md:text-5xl font-bold text-white leading-tight mb-4">
+                        {t(`web_home.${key}_title`)}
+                      </h1>
+                      <p className="font-inter text-base md:text-lg text-white/90 max-w-lg mb-8">
+                        {t(`web_home.${key}_text`)}
+                      </p>
+                      <div className="flex flex-wrap gap-4">
+                        <Link
+                          href="/web/services"
+                          className="bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary/90 transition-all font-bold shadow-sm"
+                        >
+                          {t("web_home.hero_cta_primary")}
+                        </Link>
+                        <Link
+                          href="/web/contact-us"
+                          className="border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white/10 transition-all font-bold"
+                        >
+                          {t("web_home.hero_cta_secondary")}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="sr-only">
+                    {index + 1} / {heroSlides.length}
+                  </span>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+
+        {/* Slide indicators */}
+        <div className="absolute z-10 bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
+          {heroSlides.map(({ key }, index) => (
+            <button
+              key={key}
+              type="button"
+              aria-label={`${t("web_home.hero_slide_indicator")} ${index + 1}`}
+              onClick={() => api?.scrollTo(index)}
+              className={`h-2.5 rounded-full transition-all ${
+                current === index ? "w-8 bg-white" : "w-2.5 bg-white/50 hover:bg-white/80"
+              }`}
             />
-          </div>
+          ))}
         </div>
       </section>
 
@@ -113,7 +173,7 @@ const HomePage = () => {
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1 rounded-xl overflow-hidden h-[300px] border border-border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/equipe.jpg" alt={t("web_home.mission_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/equipe.svg" alt={t("web_home.mission_title")} className="w-full h-full object-cover" />
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-6">
             <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground">
