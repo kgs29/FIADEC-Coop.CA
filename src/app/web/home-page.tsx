@@ -34,10 +34,10 @@ const products = [
 ];
 
 const heroSlides = [
-  { key: "hero_slide_1", image: "/web-site/slide-epargne.svg" },
+  { key: "hero_slide_1", image: "/web-site/hero-fiadec.png" },
   { key: "hero_slide_2", image: "/web-site/slide-credit.svg" },
-  { key: "hero_slide_3", image: "/web-site/compte-courant.jpg" },
-  { key: "hero_slide_4", image: "/web-site/slide-pme.svg" },
+  { key: "hero_slide_3", image: "/web-site/gerez_compte_quotidien.png" },
+  { key: "hero_slide_4", image: "/web-site/PME.jpg" },
 ];
 
 const HomePage = () => {

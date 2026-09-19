@@ -4,11 +4,11 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useLogoutMutation } from "@/store/apis/auth/authentication.api";
 import i18n from "@/locale/i18n";
 import { t } from "i18next";
-import { Check, ChevronDown, Globe, Loader2, Menu, X } from "lucide-react";
+import { Check, ChevronDown, Globe, Loader2, Menu, UserRound, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import logo from "../../assets/logo_fiadec.jpg";
 import { Button } from "../ui/button";
@@ -32,8 +32,21 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentLang, setCurrentLang] = useState(i18n.language ?? "fr");
   const pathname: string = usePathname();
+  const isHomePage = pathname === "/web";
+  const isTransparent = isHomePage && !isScrolled;
+
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
 
   const handleLangChange = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -76,20 +89,32 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 border-b border-border shadow-sm">
+    <header
+      className={`${
+        isHomePage ? (isScrolled ? "fixed" : "absolute") : "sticky"
+      } top-0 left-0 z-50 w-full border-b transition-all duration-300 ${
+        isTransparent
+          ? "border-transparent bg-transparent shadow-none"
+          : "border-border bg-card/95 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-card/90"
+      }`}
+    >
       <div className="px-4 md:px-8 lg:px-16 xl:px-20 mx-auto w-full">
         <div className="flex items-center justify-between py-2">
           <Link href="/web" className="flex items-center gap-3 shrink-0">
             <Image
               src={logo}
               alt="FIADEC-COOP-CA"
-              width={48}
-              height={48}
-              className="h-10 w-10 md:h-12 md:w-12 object-contain rounded-full hover:opacity-90 transition-opacity"
+              width={56}
+              height={56}
+              className="h-12 w-12 md:h-14 md:w-14 object-contain rounded-md hover:opacity-90 transition-opacity"
               priority
             />
-            <span className="font-poppins font-bold text-lg md:text-xl text-primary hidden sm:block tracking-tight">
-              FIADEC
+            <span
+              className={`font-poppins font-bold text-lg md:text-xl hidden sm:block tracking-tight ${
+                isTransparent ? "text-white" : "text-primary"
+              }`}
+            >
+              FIADEC-COOP CA
             </span>
           </Link>
 
@@ -102,7 +127,9 @@ export default function Header() {
                   className={`${
                     entry.isActive
                       ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 pointer-events-none"
-                      : "hover:text-primary text-foreground hover:bg-primary/10"
+                      : isTransparent
+                        ? "text-white hover:text-white hover:bg-white/15"
+                        : "hover:text-primary text-foreground hover:bg-primary/10"
                   } px-3.5 py-1.5 text-sm font-medium rounded-full transition-all duration-200`}
                 >
                   {entry.label}
@@ -114,7 +141,9 @@ export default function Header() {
                       className={`flex items-center gap-1 px-3.5 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${
                         entry.isActive
                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/30"
-                          : "hover:text-primary text-foreground hover:bg-primary/10"
+                          : isTransparent
+                            ? "text-white hover:text-white hover:bg-white/15"
+                            : "hover:text-primary text-foreground hover:bg-primary/10"
                       }`}
                     >
                       {entry.label}
@@ -136,15 +165,28 @@ export default function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
-            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} />
+            <Link
+              href="/web/login"
+              className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-full transition-all duration-200 ${
+                isTransparent
+                  ? "bg-white text-primary hover:bg-white/90"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              }`}
+            >
+              <UserRound size={15} />
+              {t("custum.header.client_space")}
+            </Link>
+            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} light={isTransparent} />
             <ThemeToggle />
           </div>
 
           <div className="lg:hidden flex items-center gap-2">
-            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} />
+            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} light={isTransparent} />
             <ThemeToggle />
             <button
-              className="p-1.5 rounded-lg hover:bg-muted transition-colors text-foreground"
+              className={`p-1.5 rounded-lg transition-colors ${
+                isTransparent ? "text-white hover:bg-white/15" : "text-foreground hover:bg-muted"
+              }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={t("menu")}
             >
@@ -205,6 +247,14 @@ export default function Header() {
                 </div>
               ),
             )}
+            <Link
+              href="/web/login"
+              className="flex items-center justify-center gap-2 mx-2 mt-3 py-2 px-4 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <UserRound size={16} />
+              {t("custum.header.client_space")}
+            </Link>
           </div>
         )}
       </div>
@@ -217,15 +267,21 @@ export default function Header() {
 export function LangSwitcher({
   currentLang,
   onChange,
+  light = false,
 }: Readonly<{
   currentLang: string;
   onChange: (lang: string) => void;
+  light?: boolean;
 }>) {
   const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex items-center hover:bg-muted text-foreground p-1 rounded-md cursor-pointer">
+        <div
+          className={`flex items-center p-1 rounded-md cursor-pointer ${
+            light ? "text-white hover:bg-white/15" : "text-foreground hover:bg-muted"
+          }`}
+        >
           <Globe className="h-7 w-7 p-1" />
           <p className="text-sm">{currentLang === "fr" ? "FR" : "EN"}</p>
         </div>

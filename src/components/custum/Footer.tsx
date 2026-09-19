@@ -157,8 +157,8 @@ export default function Footer(): React.ReactElement {
           {/* FIADEC - prend plus de largeur */}
           <div className="lg:col-span-2 space-y-4">
             <div>
-              <div className="inline-flex items-center gap-2 bg-card rounded-xl px-3 py-2 shadow-sm mb-3">
-                <Image src={logo} alt="FIADEC-COOP-CA" width={36} height={36} className="h-9 w-9 object-contain rounded-full" priority />
+              <div className="inline-flex items-center gap-3 bg-card rounded-lg px-3 py-2 shadow-sm mb-3">
+                <Image src={logo} alt="FIADEC-COOP-CA" width={52} height={52} className="h-13 w-13 object-contain rounded-md" priority />
                 <span className="font-poppins font-bold text-primary">FIADEC-COOP-CA</span>
               </div>
               <p className="text-muted-foreground text-sm leading-relaxed">{t("footerText")}</p>
