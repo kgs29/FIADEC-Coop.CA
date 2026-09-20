@@ -35,7 +35,7 @@ const products = [
 
 const heroSlides = [
   { key: "hero_slide_1", image: "/web-site/hero-fiadec.png" },
-  { key: "hero_slide_2", image: "/web-site/slide-credit.svg" },
+  { key: "hero_slide_2", image: "/web-site/slide-credit.jpg" },
   { key: "hero_slide_3", image: "/web-site/gerez_compte_quotidien.png" },
   { key: "hero_slide_4", image: "/web-site/PME.jpg" },
 ];
@@ -173,7 +173,7 @@ const HomePage = () => {
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1 rounded-xl overflow-hidden h-[300px] border border-border">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/equipe.svg" alt={t("web_home.mission_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/mission-vision.jpg" alt={t("web_home.mission_title")} className="w-full h-full object-cover" />
           </div>
           <div className="order-1 md:order-2 flex flex-col gap-6">
             <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground">

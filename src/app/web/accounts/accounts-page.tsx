@@ -1,20 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { Wallet, PiggyBank, Clock3, CheckCircle2, BadgeCheck, MapPinned, Camera, Banknote, Headset } from "lucide-react";
+import {
+  Wallet,
+  PiggyBank,
+  Building2,
+  CheckCircle2,
+  BadgeCheck,
+  MapPinned,
+  Camera,
+  Banknote,
+  Headset,
+  FileText,
+  Briefcase,
+  Tractor,
+  Store,
+  ShieldCheck,
+  CreditCard,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const accountTypes = [
-  { key: "type_1", Icon: Wallet, featured: false },
-  { key: "type_2", Icon: PiggyBank, featured: true },
-  { key: "type_3", Icon: Clock3, featured: false },
+  { key: "courant_physique", Icon: Wallet, featured: false, color: "emerald" },
+  { key: "courant_association_entreprise", Icon: Building2, featured: true, color: "primary" },
+  { key: "epargne_physique", Icon: PiggyBank, featured: false, color: "amber" },
+  { key: "epargne_entreprise", Icon: CreditCard, featured: false, color: "purple" },
 ];
 
-const requirements = [
-  { key: "req_1", Icon: BadgeCheck },
-  { key: "req_2", Icon: MapPinned },
-  { key: "req_3", Icon: Camera },
-  { key: "req_4", Icon: Banknote },
+const targets = [
+  { key: "entrepreneurs", Icon: Briefcase },
+  { key: "sauveteurs", Icon: ShieldCheck },
+  { key: "bayam_sellam", Icon: Store },
+  { key: "pme", Icon: Building2 },
+  { key: "commerçants", Icon: CreditCard },
+  { key: "agriculteurs", Icon: Tractor },
 ];
 
 export default function AccountsPage() {
@@ -44,21 +63,44 @@ export default function AccountsPage() {
         </div>
       </section>
 
+      {/* Cibles */}
+      <section className="py-14 bg-background border-b border-border">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground mb-3">{t("web_accounts.targets_title")}</h2>
+            <p className="font-inter text-muted-foreground max-w-xl mx-auto">{t("web_accounts.targets_subtitle")}</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {targets.map(({ key, Icon }) => (
+              <div
+                key={key}
+                className="flex flex-col items-center gap-3 bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-md transition-all duration-300 text-center"
+              >
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Icon className="w-6 h-6 text-primary" />
+                </div>
+                <span className="font-inter text-sm font-medium text-foreground">{t(`web_accounts.target_${key}`)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Account types */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-muted">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground mb-4">{t("web_accounts.types_title")}</h2>
             <p className="font-inter text-muted-foreground max-w-2xl mx-auto">{t("web_accounts.types_subtitle")}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
             {accountTypes.map(({ key, Icon, featured }) => (
               <div
                 key={key}
-                className={`bg-card border rounded-xl p-8 flex flex-col relative transition-shadow duration-300 ${
+                className={`bg-card border rounded-xl p-8 flex flex-col relative transition-all duration-300 ${
                   featured
-                    ? "border-primary/40 shadow-[0px_12px_32px_rgba(0,0,0,0.08)] md:-translate-y-4"
-                    : "border-border hover:shadow-[0px_4px_20px_rgba(0,0,0,0.05)]"
+                    ? "border-primary/50 shadow-[0px_12px_32px_rgba(0,0,0,0.12)] md:-translate-y-2"
+                    : "border-border hover:shadow-[0px_4px_20px_rgba(0,0,0,0.07)] hover:-translate-y-1"
                 }`}
               >
                 {featured && (
@@ -68,20 +110,31 @@ export default function AccountsPage() {
                 )}
                 <div
                   className={`w-14 h-14 rounded-full flex items-center justify-center mb-6 ${
-                    featured ? "bg-accent text-accent-foreground" : "bg-muted text-primary"
+                    featured ? "bg-primary text-primary-foreground" : "bg-muted text-primary"
                   }`}
                 >
                   <Icon className="w-7 h-7" />
                 </div>
                 <h3 className="font-poppins text-xl font-bold text-foreground mb-2">{t(`web_accounts.${key}_title`)}</h3>
-                <p className="font-inter text-muted-foreground mb-6 flex-grow">{t(`web_accounts.${key}_desc`)}</p>
-                <ul className="space-y-3 mb-8">
-                  {["feat_1", "feat_2", "feat_3"].map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-foreground font-inter text-sm">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      {t(`web_accounts.${key}_${f}`)}
-                    </li>
-                  ))}
+                <p className="font-inter text-muted-foreground mb-5 flex-grow text-sm">{t(`web_accounts.${key}_desc`)}</p>
+
+                {/* Frais d'ouverture */}
+                <div className="bg-muted/60 rounded-lg p-3 mb-5 border border-border">
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-1">{t("web_accounts.opening_fee_label")}</p>
+                  <p className="font-poppins font-bold text-primary text-base">{t(`web_accounts.${key}_frais`)}</p>
+                </div>
+
+                <ul className="space-y-2.5 mb-8">
+                  {["doc_1", "doc_2", "doc_3", "doc_4", "doc_5", "doc_6", "doc_7", "doc_8", "doc_9"].map((d) => {
+                    const val = t(`web_accounts.${key}_${d}`, { defaultValue: "" });
+                    if (!val) return null;
+                    return (
+                      <li key={d} className="flex items-start gap-3 text-foreground font-inter text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        {val}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <a
                   href="#open-account"
@@ -93,6 +146,29 @@ export default function AccountsPage() {
                 >
                   {t("web_accounts.type_cta")}
                 </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Conditions générales d'adhésion */}
+      <section className="py-16 md:py-20 bg-background border-t border-border">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground mb-4">{t("web_accounts.adhesion_title")}</h2>
+            <p className="font-inter text-muted-foreground max-w-2xl mx-auto">{t("web_accounts.adhesion_subtitle")}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {["frais_adhesion","valeur_part","min_parts","fonds_solidarite","total_adhesion"].map((key) => (
+              <div key={key} className="bg-card border border-border rounded-xl p-6 flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                  <BadgeCheck className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-poppins font-bold text-foreground text-sm mb-1">{t(`web_accounts.adhesion_${key}_label`)}</h4>
+                  <p className="font-inter text-primary font-semibold">{t(`web_accounts.adhesion_${key}_value`)}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -118,7 +194,13 @@ export default function AccountsPage() {
               </div>
             </div>
             <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
-              {requirements.map(({ key, Icon }) => (
+              {[
+                { key: "req_1", Icon: BadgeCheck },
+                { key: "req_2", Icon: MapPinned },
+                { key: "req_3", Icon: Camera },
+                { key: "req_4", Icon: Banknote },
+                { key: "req_5", Icon: FileText },
+              ].map(({ key, Icon }) => (
                 <div key={key} className="bg-card p-6 rounded-lg border border-border flex items-start gap-4">
                   <Icon className="w-6 h-6 text-primary mt-1 shrink-0" />
                   <div>

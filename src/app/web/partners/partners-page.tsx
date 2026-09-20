@@ -36,11 +36,21 @@ export default function PartnersPage() {
       </section>
 
       <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-poppins text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-            {t("web_partners.intro_title")}
-          </h2>
-          <p className="text-gray-600 text-lg leading-relaxed">{t("web_partners.intro_text")}</p>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="text-center lg:text-left">
+            <h2 className="font-poppins text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              {t("web_partners.intro_title")}
+            </h2>
+            <p className="text-gray-600 text-lg leading-relaxed">{t("web_partners.intro_text")}</p>
+          </div>
+          <div className="relative h-[280px] lg:h-[340px] rounded-2xl overflow-hidden shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/web-site/partners-intro.jpg"
+              alt={t("web_partners.intro_title")}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </section>
 
@@ -55,6 +65,17 @@ export default function PartnersPage() {
               <p className="text-gray-600 text-sm">{category.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="px-6 pt-20">
+        <div className="max-w-6xl mx-auto relative h-[220px] md:h-[300px] rounded-2xl overflow-hidden shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/web-site/partners-banner.jpg"
+            alt={t("web_partners.benefits_title")}
+            className="w-full h-full object-cover"
+          />
         </div>
       </section>
 

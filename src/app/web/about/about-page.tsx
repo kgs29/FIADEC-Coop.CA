@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Flag, Eye, Handshake, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Flag, Eye, Handshake, CheckCircle2, ShieldCheck, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+const branches = ["branch_siege", "branch_dschang", "branch_yaounde", "branch_douala"];
 
 export default function AboutPage() {
   const { t } = useTranslation();
@@ -27,21 +29,65 @@ export default function AboutPage() {
             <div className="w-16 h-1 bg-primary" />
             <p className="font-inter text-muted-foreground leading-relaxed">{t("web_about.institutional_text_1")}</p>
             <p className="font-inter text-muted-foreground leading-relaxed">{t("web_about.institutional_text_2")}</p>
-            <div className="pt-2">
-              <div className="flex items-center gap-4 bg-card p-4 border border-border rounded-lg">
-                <div className="bg-accent text-accent-foreground p-3 rounded-full flex items-center justify-center">
+
+            {/* Badge agrément */}
+            <div className="pt-2 space-y-3">
+              <div className="flex items-start gap-4 bg-card p-4 border border-border rounded-lg">
+                <div className="bg-accent text-accent-foreground p-3 rounded-full flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-poppins font-bold text-foreground">{t("web_about.badge_title")}</h4>
+                  <h4 className="font-poppins font-bold text-foreground mb-1">{t("web_about.badge_title")}</h4>
                   <p className="font-inter text-sm text-muted-foreground">{t("web_about.badge_text")}</p>
                 </div>
+              </div>
+
+              {/* Détails légaux */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 space-y-3">
+                <h4 className="font-poppins font-bold text-foreground text-sm uppercase tracking-wide mb-2">
+                  {t("web_about.license_title")}
+                </h4>
+                {[
+                  "license_cobac",
+                  "license_minfi",
+                  "license_category",
+                  "license_siege",
+                  "license_bp",
+                ].map((key) => (
+                  <div key={key} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-inter text-sm text-foreground">{t(`web_about.${key}`)}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           <div className="relative h-[320px] lg:h-[420px] rounded-xl overflow-hidden border border-border shadow-sm">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/about-hero.svg" alt={t("web_about.institutional_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/about-hero.jpg" alt={t("web_about.institutional_title")} className="w-full h-full object-cover" />
+          </div>
+        </div>
+      </section>
+
+      {/* Nos agences */}
+      <section className="py-16 md:py-24 bg-muted border-y border-border">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="font-poppins text-2xl md:text-3xl font-bold text-foreground">
+              {t("web_about.branches_title")}
+            </h2>
+            <p className="font-inter text-muted-foreground mt-4 max-w-2xl mx-auto">{t("web_about.branches_subtitle")}</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {branches.map((key) => (
+              <div key={key} className="bg-card p-6 border border-border rounded-xl shadow-sm flex flex-col items-start gap-3">
+                <div className="w-11 h-11 bg-accent text-accent-foreground flex items-center justify-center rounded-full">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <h4 className="font-poppins font-bold text-foreground">{t(`web_about.${key}_title`)}</h4>
+                <p className="font-inter text-muted-foreground text-sm">{t(`web_about.${key}_desc`)}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -92,7 +138,7 @@ export default function AboutPage() {
         <div className="rounded-xl overflow-hidden border border-border shadow-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/web-site/about-team.svg"
+            src="/web-site/about-team.jpg"
             alt={t("web_about.team_title")}
             className="w-full h-[280px] md:h-[380px] object-cover"
           />

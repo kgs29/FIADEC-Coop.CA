@@ -16,6 +16,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import logo from "../../assets/logo_fiadec.jpg";
+import ngtiLogo from "../../assets/logo_ngti.png";
 
 const FacebookSvg = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -68,7 +69,7 @@ const NewsletterForm = () => {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    if (!email.trim().includes("@") || !email.trim().includes(".")) {
       setStatus("error");
       return;
     }
@@ -161,6 +162,7 @@ export default function Footer(): React.ReactElement {
                 <Image src={logo} alt="FIADEC-COOP-CA" width={52} height={52} className="h-13 w-13 object-contain rounded-md" priority />
                 <span className="font-poppins font-bold text-primary">FIADEC-COOP-CA</span>
               </div>
+              <p className="text-primary text-xs font-semibold italic mb-2">{t("custum.footer.slogan")}</p>
               <p className="text-muted-foreground text-sm leading-relaxed">{t("footerText")}</p>
             </div>
             <div className="space-y-3 text-sm">
@@ -236,6 +238,34 @@ export default function Footer(): React.ReactElement {
             </ul>
           </div>
 
+          {/* Solutions de transfert */}
+          <div className="space-y-4">
+            <h6 className="text-lg font-semibold text-foreground pb-2 border-b-2 border-primary inline-block">
+              {t("custum.footer.transfer_title")}
+            </h6>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { name: "MTN Mobile Money", color: "#FFCC00", initial: "MM" },
+                { name: "Orange Money", color: "#FF6600", initial: "OM" },
+                { name: "Atlantique Assurances", color: "#003399", initial: "AA" },
+                { name: "Western Union", color: "#000000", initial: "WU" },
+              ].map(({ name, color, initial }) => (
+                <div
+                  key={name}
+                  className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary/50 transition-all duration-200"
+                >
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
+                    style={{ backgroundColor: color }}
+                  >
+                    {initial}
+                  </div>
+                  <span className="text-xs text-muted-foreground font-medium leading-tight">{name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Nous suivre */}
           <div className="space-y-4">
             <h6 className="text-lg font-semibold text-foreground pb-2 border-b-2 border-primary inline-block">
@@ -259,13 +289,20 @@ export default function Footer(): React.ReactElement {
         </div>
 
         <div className="pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-sm text-center md:text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <p className="text-muted-foreground text-sm text-center md:text-left order-2 md:order-1">
               {t("custum.footer.copyright", { year: new Date().getFullYear() })}
             </p>
-            <p className="text-muted-foreground text-xs text-center md:text-right">
+            <p className="text-muted-foreground text-xs text-center order-1 md:order-2">
               {t("custum.footer.tagline")}
             </p>
+            <div className="flex items-center justify-center md:justify-end gap-1.5 order-3">
+              <span className="text-muted-foreground text-xs">{t("custum.footer.developed_by")}</span>
+              <span className="flex items-center gap-1.5">
+                <Image src={ngtiLogo} alt="NG-Tech-In" width={18} height={18} className="h-[18px] w-[18px] object-contain" />
+                <span className="text-xs font-semibold text-foreground">NG-Tech-In</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>

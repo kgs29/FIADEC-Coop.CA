@@ -165,6 +165,8 @@ export default function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
+            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} light={isTransparent} />
+            <ThemeToggle />
             <Link
               href="/web/login"
               className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-full transition-all duration-200 ${
@@ -176,8 +178,6 @@ export default function Header() {
               <UserRound size={15} />
               {t("custum.header.client_space")}
             </Link>
-            <LangSwitcher currentLang={currentLang} onChange={handleLangChange} light={isTransparent} />
-            <ThemeToggle />
           </div>
 
           <div className="lg:hidden flex items-center gap-2">

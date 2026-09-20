@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Wallet, Clock3, Banknote, Store, Sprout, GraduationCap } from "lucide-react";
+import { CheckCircle2, Vault, Receipt, Landmark, FileSignature, Lock, Clock3, Target, Banknote, TrendingUp, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,21 +8,25 @@ import { useTranslation } from "react-i18next";
 const ALL = "all";
 
 const products = [
-  { key: "product_1", category: "accounts", Icon: Wallet, href: "/web/accounts" },
-  { key: "product_2", category: "savings", Icon: Clock3, href: "/web/accounts" },
-  { key: "product_3", category: "credits", Icon: Banknote, href: "/web/contact-us" },
-  { key: "product_4", category: "sme", Icon: Store, href: "/web/contact-us" },
-  { key: "product_5", category: "agriculture", Icon: Sprout, href: "/web/contact-us" },
-  { key: "product_6", category: "savings", Icon: GraduationCap, href: "/web/accounts" },
+  { key: "product_1", category: "services", Icon: Vault, href: "/web/contact-us" },
+  { key: "product_2", category: "savings", Icon: Receipt, href: "/web/contact-us" },
+  { key: "product_3", category: "accounts", Icon: Landmark, href: "/web/accounts" },
+  { key: "product_4", category: "services", Icon: FileSignature, href: "/web/contact-us" },
+  { key: "product_5", category: "savings", Icon: Lock, href: "/web/accounts" },
+  { key: "product_6", category: "savings", Icon: Clock3, href: "/web/accounts" },
+  { key: "product_7", category: "savings", Icon: Target, href: "/web/accounts" },
+  { key: "product_8", category: "financement", Icon: Banknote, href: "/web/contact-us" },
+  { key: "product_9", category: "financement", Icon: TrendingUp, href: "/web/contact-us" },
+  { key: "product_10", category: "assurance", Icon: ShieldCheck, href: "/web/contact-us" },
 ] as const;
 
 const filters = [
   { key: ALL, label: "filter_all" },
   { key: "accounts", label: "filter_accounts" },
   { key: "savings", label: "filter_savings" },
-  { key: "credits", label: "filter_credits" },
-  { key: "sme", label: "filter_sme" },
-  { key: "agriculture", label: "filter_agriculture" },
+  { key: "services", label: "filter_services" },
+  { key: "financement", label: "filter_financement" },
+  { key: "assurance", label: "filter_assurance" },
 ] as const;
 
 export default function ServicesPage() {
@@ -68,7 +72,7 @@ export default function ServicesPage() {
       <section className="bg-background">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/web-site/services-people.svg"
+          src="/web-site/services-hero.jpg"
           alt={t("web_services.hero_title")}
           className="w-full h-[220px] md:h-[320px] object-cover"
         />
@@ -90,11 +94,15 @@ export default function ServicesPage() {
                 <p className="font-inter text-muted-foreground mb-6 flex-grow">{t(`web_services.${key}_desc`)}</p>
                 <div className="border-t border-border pt-4 mb-6">
                   <ul className="space-y-2">
-                    {["feat_1", "feat_2"].map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-foreground text-xs font-inter">
-                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0" /> {t(`web_services.${key}_${f}`)}
-                      </li>
-                    ))}
+                    {["feat_1", "feat_2", "feat_3"].map((f) => {
+                      const val = t(`web_services.${key}_${f}`, { defaultValue: "" });
+                      if (!val) return null;
+                      return (
+                        <li key={f} className="flex items-center gap-2 text-foreground text-xs font-inter">
+                          <CheckCircle2 className="w-4 h-4 text-primary shrink-0" /> {val}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 <Link
