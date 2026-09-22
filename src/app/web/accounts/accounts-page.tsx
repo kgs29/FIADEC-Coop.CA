@@ -56,9 +56,9 @@ export default function AccountsPage() {
               {t("web_accounts.hero_cta")}
             </a>
           </div>
-          <div className="md:w-1/2 relative h-[280px] md:h-[360px] w-full rounded-2xl overflow-hidden shadow-sm border border-border">
+          <div className="md:w-1/2 relative aspect-video w-full rounded-2xl overflow-hidden shadow-sm border border-border bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/web-site/compte-courant.jpg" alt={t("web_accounts.hero_title")} className="w-full h-full object-cover" />
+            <img src="/web-site/compte-courant.jpg" alt={t("web_accounts.hero_title")} className="w-full h-full object-contain" />
           </div>
         </div>
       </section>

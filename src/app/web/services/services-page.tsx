@@ -68,16 +68,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Accompagnement */}
-      <section className="bg-background">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/web-site/services-hero.jpg"
-          alt={t("web_services.hero_title")}
-          className="w-full h-[220px] md:h-[320px] object-cover"
-        />
-      </section>
-
       {/* Product grid */}
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-6xl mx-auto px-6">

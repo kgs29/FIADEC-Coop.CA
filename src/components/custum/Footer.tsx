@@ -245,22 +245,22 @@ export default function Footer(): React.ReactElement {
             </h6>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { name: "MTN Mobile Money", color: "#FFCC00", initial: "MM" },
-                { name: "Orange Money", color: "#FF6600", initial: "OM" },
-                { name: "Atlantique Assurances", color: "#003399", initial: "AA" },
-                { name: "Western Union", color: "#000000", initial: "WU" },
-              ].map(({ name, color, initial }) => (
+                { name: "MTN Mobile Money", image: "/web-site/Mtn.jpg" },
+                { name: "Orange Money", image: "/web-site/orangejpg.jpg" },
+                { name: "Atlantique Assurances", image: "/web-site/atlanqtiqueassurance.png" },
+                { name: "Western Union", image: "/web-site/western.jpg" },
+              ].map(({ name, image }) => (
                 <div
                   key={name}
-                  className="flex items-center gap-2 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary/50 transition-all duration-200"
+                  className="flex items-center justify-center bg-card border border-border rounded-lg px-3 py-2 hover:border-primary/50 transition-all duration-200"
                 >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0"
-                    style={{ backgroundColor: color }}
-                  >
-                    {initial}
-                  </div>
-                  <span className="text-xs text-muted-foreground font-medium leading-tight">{name}</span>
+                  <Image
+                    src={image}
+                    alt={name}
+                    width={96}
+                    height={48}
+                    className="w-full h-12 object-contain"
+                  />
                 </div>
               ))}
             </div>
