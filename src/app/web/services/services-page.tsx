@@ -18,6 +18,8 @@ const products = [
   { key: "product_8", category: "financement", Icon: Banknote, href: "/web/contact-us" },
   { key: "product_9", category: "financement", Icon: TrendingUp, href: "/web/contact-us" },
   { key: "product_10", category: "assurance", Icon: ShieldCheck, href: "/web/contact-us" },
+  { key: "product_11", category: "savings", Icon: ShieldCheck, href: "/web/accounts" },
+  { key: "product_12", category: "services", Icon: Clock3, href: "/web/contact-us" },
 ] as const;
 
 const filters = [

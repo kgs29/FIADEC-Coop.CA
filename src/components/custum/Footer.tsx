@@ -247,7 +247,6 @@ export default function Footer(): React.ReactElement {
               {[
                 { name: "MTN Mobile Money", image: "/web-site/Mtn.jpg" },
                 { name: "Orange Money", image: "/web-site/orangejpg.jpg" },
-                { name: "Atlantique Assurances", image: "/web-site/atlanqtiqueassurance.png" },
                 { name: "Western Union", image: "/web-site/western.jpg" },
               ].map(({ name, image }) => (
                 <div
