@@ -1,17 +1,25 @@
 'use client'
 
-import React from "react";
+import React, { Suspense } from "react";
 import ResetPasswordConfirmComponent from "./ResetPasswordConfirmComponent";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-const ResetPasswordConfirmPage = () => {
-  const { uid, token } = useParams();
+const ResetPasswordConfirmContent = () => {
+  const searchParams = useSearchParams();
+  const uid = searchParams.get("uid") ?? "";
+  const token = searchParams.get("token") ?? "";
 
   return (
     <div>
-      <ResetPasswordConfirmComponent uid={uid as string} token={token as string} />
+      <ResetPasswordConfirmComponent uid={uid} token={token} />
     </div>
   );
 };
+
+const ResetPasswordConfirmPage = () => (
+  <Suspense fallback={null}>
+    <ResetPasswordConfirmContent />
+  </Suspense>
+);
 
 export default ResetPasswordConfirmPage;

@@ -7,7 +7,7 @@ vi.mock('@/store/apis/payment/order.api', () => ({
 }))
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }))
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }))
-vi.mock('next/navigation', () => ({ useParams: () => ({ id: '1' }), useRouter: () => ({ push: vi.fn() }), usePathname: () => '/' }))
+vi.mock('next/navigation', () => ({ useSearchParams: () => new URLSearchParams('id=1'), useRouter: () => ({ push: vi.fn() }), usePathname: () => '/' }))
 
 import OrderDetailPage from './page'
 

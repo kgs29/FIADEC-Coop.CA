@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import ResetPasswordConfirmPage from "./page";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
-  useParams: vi.fn(),
+  useSearchParams: vi.fn(),
 }));
 
 // Mock ResetPasswordConfirmComponent
@@ -19,7 +19,7 @@ vi.mock("./ResetPasswordConfirmComponent", () => ({
 
 describe("ResetPasswordConfirmPage", () => {
   it("extracts uid and token from params and renders component", () => {
-    vi.mocked(useParams).mockReturnValue({ uid: "test-uid", token: "test-token" });
+    vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams("uid=test-uid&token=test-token") as any);
 
     render(<ResetPasswordConfirmPage />);
 
