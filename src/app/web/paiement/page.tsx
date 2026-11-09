@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -54,7 +54,7 @@ function detectBrand(number: string): "visa" | "mastercard" | "other" {
 
 // ── Composant principal ───────────────────────────────────────────────────────
 
-export default function PaiementPage() {
+function PaiementContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("amount");
@@ -526,5 +526,13 @@ export default function PaiementPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaiementPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaiementContent />
+    </Suspense>
   );
 }

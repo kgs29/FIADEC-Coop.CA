@@ -33,25 +33,25 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
       toast.error(t("fill_all_fields"));
       return;
     }
+
     setLoading(true);
+
     try {
-      const res = await fetch(`${BASE_API_URL}core/contact/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.status === 201) {
-        toast.success(t("contact_success"));
-        setForm({ name: "", email: "", subject: "", message: "" });
-      } else {
-        const data = await res.json();
-        const firstError = Object.values(data)?.[0];
-        toast.error(Array.isArray(firstError) ? firstError[0] : t("an_error_occurred"));
-      }
+      const subject = encodeURIComponent(form.subject);
+      const body = encodeURIComponent(
+        `Nom: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
+      );
+
+      const mailtoLink = `mailto:${EMAIL_ADDRESS}?subject=${subject}&body=${body}`;
+      window.location.href = mailtoLink;
+
+      toast.success(t("contact_success"));
+      setForm({ name: "", email: "", subject: "", message: "" });
     } catch {
       toast.error(t("an_error_occurred"));
     } finally {

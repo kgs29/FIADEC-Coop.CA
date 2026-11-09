@@ -9,8 +9,8 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -43,10 +43,10 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; badge: string; c
   },
 };
 
-export default function OrderDetailPage() {
+function OrderDetailContent() {
   const { t } = useTranslation();
-  const params = useParams();
-  const orderId = params.id as string;
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("id") ?? "";
   const { data: order, isLoading } = useGetOrderQuery(orderId);
   const [cancelOrder, { isLoading: cancelling }] = useCancelOrderMutation();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -269,5 +269,13 @@ export default function OrderDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderDetailPage() {
+  return (
+    <Suspense fallback={null}>
+      <OrderDetailContent />
+    </Suspense>
   );
 }

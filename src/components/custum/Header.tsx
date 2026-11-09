@@ -168,7 +168,7 @@ export default function Header() {
             <LangSwitcher currentLang={currentLang} onChange={handleLangChange} light={isTransparent} />
             <ThemeToggle />
             <Link
-              href="/web/login"
+              href="#" // TODO: ajouter le lien de l'espace client
               className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-full transition-all duration-200 ${
                 isTransparent
                   ? "bg-white text-primary hover:bg-white/90"
@@ -248,7 +248,7 @@ export default function Header() {
               ),
             )}
             <Link
-              href="/web/login"
+              href="#" // TODO: ajouter le lien de l'espace client
               className="flex items-center justify-center gap-2 mx-2 mt-3 py-2 px-4 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >

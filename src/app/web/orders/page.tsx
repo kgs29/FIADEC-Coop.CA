@@ -75,7 +75,7 @@ export default function OrdersPage() {
           return (
             <Link
               key={order.id}
-              href={`/web/orders/${order.id}`}
+              href={`/web/orders/detail?id=${order.id}`}
               className="block"
             >
               <div
